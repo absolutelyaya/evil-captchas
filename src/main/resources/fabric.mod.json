@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "captcha",
+	"version": "${version}",
+	"name": "CAPTCHA",
+	"description": "Don't you love Captchas ?",
+	"authors": [
+		"Absolutelyaya"
+	],
+	"contact": {
+		"homepage": "https://absolutelyaya.neocities.org/",
+		"sources": "soon"
+	},
+	"license": "MIT",
+	"icon": "assets/captcha/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"absolutelyaya.captcha.CAPTCHA"
+		],
+		"client": [
+			"absolutelyaya.captcha.CAPTCHAClient"
+		]
+	},
+	"mixins": [
+		"captcha.mixins.json",
+		{
+			"config": "captcha.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+	}
+}

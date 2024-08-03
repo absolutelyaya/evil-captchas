@@ -1,0 +1,7 @@
+{
+  "wrong_buzzer": {
+    "sounds": [
+      "captcha:wrong"
+    ]
+  }
+}
