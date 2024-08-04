@@ -1,0 +1,20 @@
+{
+  "promptKey": "captcha.prompt.flower",
+  "difficulty": 1,
+  "values": [
+    "minecraft:block/allium",
+    "minecraft:block/poppy",
+    "minecraft:block/azure_bluet",
+    "minecraft:block/oxeye_daisy",
+    "minecraft:block/lily_of_the_valley",
+    "minecraft:block/dandelion",
+    "minecraft:block/blue_orchid",
+    "minecraft:block/red_tulip",
+    "minecraft:block/orange_tulip",
+    "minecraft:block/white_tulip",
+    "minecraft:block/pink_tulip",
+    "minecraft:block/cornflower",
+    "minecraft:block/torchflower",
+    "minecraft:block/wither_rose"
+  ]
+}

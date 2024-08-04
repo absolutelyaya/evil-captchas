@@ -1,6 +1,7 @@
 package absolutelyaya.captcha;
 
-import absolutelyaya.captcha.data.BoxCaptchaDataManager;
+import absolutelyaya.captcha.data.MultiBoxCaptchaPoolManager;
+import absolutelyaya.captcha.data.SingleBoxCaptchaDataManager;
 import absolutelyaya.captcha.screen.AbstractCaptchaScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -10,7 +11,8 @@ public class CAPTCHAClient implements ClientModInitializer
 	@Override
 	public void onInitializeClient()
 	{
-		new BoxCaptchaDataManager();
+		new SingleBoxCaptchaDataManager();
+		new MultiBoxCaptchaPoolManager();
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if(client.world != null && !(client.currentScreen instanceof AbstractCaptchaScreen))

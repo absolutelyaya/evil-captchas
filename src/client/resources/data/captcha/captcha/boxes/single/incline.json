@@ -7,8 +7,5 @@
     ["dirt", "stone", "cow"], ["dirt", "stone", "cow"], ["sky", "tree", "dirt", "stone"], ["sky", "tree", "dirt", "stone"],
     ["dirt", "stone", "cow"], ["dirt", "stone", "cow"], ["dirt", "stone"], ["dirt", "stone"],
     ["dirt", "stone"], ["dirt", "stone"], ["dirt", "stone", "cow"], ["dirt", "stone"]
-  ],
-  "prompts": [
-    "sky", "tree", "dirt", "stone", "cow"
   ]
 }

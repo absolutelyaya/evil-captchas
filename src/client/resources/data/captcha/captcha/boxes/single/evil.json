@@ -7,8 +7,5 @@
     ["evil"], ["evil"], ["evil", "bees nest"], ["evil", "bees nest"],
     ["evil", "grass"], ["evil", "grass"], ["evil", "bees nest", "grass"], ["evil", "bees nest"],
     ["grass"], ["grass"], ["grass"], ["grass"]
-  ],
-  "prompts": [
-    "evil", "bees nest", "grass"
   ]
 }

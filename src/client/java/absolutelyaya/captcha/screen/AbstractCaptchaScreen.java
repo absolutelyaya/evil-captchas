@@ -28,7 +28,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	protected void init()
 	{
 		super.init();
-		addDrawableChild(proceedButton = new ButtonWidget.Builder(Text.translatable("screen.captcha.generic.proceed"), button -> onPressedProceed())
+		addDrawableChild(proceedButton = new ButtonWidget.Builder(Text.translatable("screen.captcha.generic.proceed"), button -> onClickedProceed())
 								 .dimensions(width / 2 - 50, height / 2 + getContainerHalfSize() + 8, 100, 20).build());
 	}
 	
@@ -110,7 +110,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 			client.player.playSound(SoundRegistry.WRONG_BUZZER, 1f, 1f);
 	}
 	
-	protected void onPressedProceed()
+	protected void onClickedProceed()
 	{
 		proceedButton.active = false;
 	}
@@ -125,7 +125,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
 		AbstractCaptchaScreen captcha;
-		captcha = new SingleBoxCaptchaScreen(difficulty);
+		captcha = new MultiBoxCaptchaScreen(difficulty);
 		client.setScreen(captcha);
 	}
 	

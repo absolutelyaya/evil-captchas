@@ -18,21 +18,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BoxCaptchaDataManager extends JsonDataLoader
+public class SingleBoxCaptchaDataManager extends JsonDataLoader
 {
 	private static final Random random = Random.create();
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-	private static ImmutableMap<Identifier, BoxCaptchaData> ALL_BOXES = ImmutableMap.of();
+	private static ImmutableMap<Identifier, SingleBoxCaptchaData> ALL_BOXES = ImmutableMap.of();
 	
-	public BoxCaptchaDataManager()
+	public SingleBoxCaptchaDataManager()
 	{
-		super(GSON, "captcha/boxes");
+		super(GSON, "captcha/boxes/single");
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener()
 		{
 			@Override
 			public Identifier getFabricId()
 			{
-				return CAPTCHA.identifier("captcha/boxes");
+				return CAPTCHA.identifier("captcha/boxes/single");
 			}
 			
 			@Override
@@ -46,7 +46,7 @@ public class BoxCaptchaDataManager extends JsonDataLoader
 	@Override
 	protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler)
 	{
-		ImmutableMap.Builder<Identifier, BoxCaptchaData> builder = new ImmutableMap.Builder<>();
+		ImmutableMap.Builder<Identifier, SingleBoxCaptchaData> builder = new ImmutableMap.Builder<>();
 		prepared.forEach((id, element) -> {
 			JsonObject json = element.getAsJsonObject();
 			String texture = JsonHelper.getString(json, "texture");
@@ -64,17 +64,17 @@ public class BoxCaptchaDataManager extends JsonDataLoader
 				});
 				valueList.add(subList);
 			});
-			builder.put(id, new BoxCaptchaData(CAPTCHA.texIdentifier(texture), difficulty, subdivisions, valueList, promptList));
+			builder.put(id, new SingleBoxCaptchaData(CAPTCHA.texIdentifier(texture), difficulty, subdivisions, valueList, promptList));
 		});
 		ALL_BOXES = builder.build();
 	}
 	
-	public static BoxCaptchaData getRandom(float difficulty)
+	public static SingleBoxCaptchaData getRandom(float difficulty)
 	{
 		if(ALL_BOXES == null || ALL_BOXES.values().isEmpty())
 			return null;
-		List<BoxCaptchaData> candidates = new ArrayList<>();
-		for(BoxCaptchaData box : ALL_BOXES.values())
+		List<SingleBoxCaptchaData> candidates = new ArrayList<>();
+		for(SingleBoxCaptchaData box : ALL_BOXES.values())
 			if(Math.abs(box.difficulty() - difficulty) <= 5f)
 				candidates.add(box);
 		return candidates.get(random.nextInt(candidates.size()));

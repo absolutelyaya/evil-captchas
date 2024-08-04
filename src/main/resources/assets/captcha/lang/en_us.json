@@ -6,7 +6,7 @@
   "screen.captcha.boxes.single.instruction1": "You need to be at least %s Percent correct.",
   "screen.captcha.boxes.multi.title": "Multi Image Boxes",
   "screen.captcha.boxes.multi.instruction0": "Click on all boxes containing %s.",
-  "screen.captcha.boxes.multi.instruction1": "Click on §6PROCEED§r once none are left.",
+  "screen.captcha.boxes.multi.instruction1": "Click on §6proceed§r once none are left.",
   "screen.captcha.puzzle.title": "Puzzle Piece",
   "screen.captcha.puzzle.instruction0": "Slide the puzzle piece into the right spot.",
   "screen.captcha.wonky-text.title": "Wonky Text",
@@ -41,5 +41,12 @@
   "screen.captcha.wizard.title": "THE WIZARD ESCAPED",
   "screen.captcha.wizard.instruction0": "QUICK,, CAPTURE THE MALIGNANT LITTLE CRITTER!!",
   "screen.captcha.butterflies.title": "Butterflies",
-  "screen.captcha.butterflies.instruction0": "Eat all the Butterflies."
+  "screen.captcha.butterflies.instruction0": "Eat all the Butterflies.",
+
+  "captcha.prompt.flower": "Flowers",
+  "captcha.prompt.pickaxe": "Pickaxes",
+  "captcha.prompt.shovel": "Shovels",
+  "captcha.prompt.axe": "Axes",
+  "captcha.prompt.hoe": "Hoes",
+  "captcha.prompt.yourmum": "Your Mum"
 }

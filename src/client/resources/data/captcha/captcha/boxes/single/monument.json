@@ -7,8 +7,5 @@
     ["water", "monument"], ["water", "guardian", "monument"], ["water", "guardian", "seaweed"], ["water", "seaweed"],
     ["water", "monument"], ["water", "monument"], ["water", "monument", "seaweed"], ["water", "monument", "seaweed"],
     ["water", "monument"], ["water", "monument"], ["water", "monument", "seaweed"], ["water", "monument", "seaweed"]
-  ],
-  "prompts": [
-    "water", "guardian", "monument", "seaweed"
   ]
 }

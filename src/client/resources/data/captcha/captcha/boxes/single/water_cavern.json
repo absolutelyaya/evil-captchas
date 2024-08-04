@@ -7,8 +7,5 @@
     ["water"], ["water"], ["water", "bubbles"], ["water"],
     ["water"], ["water"], ["water", "bubbles"], ["water", "magma"],
     ["water"], ["water", "magma"], ["water", "magma", "bubbles"], ["water", "magma"]
-  ],
-  "prompts": [
-    "water", "magma", "bubbles"
   ]
 }

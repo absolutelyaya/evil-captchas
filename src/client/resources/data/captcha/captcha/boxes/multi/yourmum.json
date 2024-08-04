@@ -1,0 +1,12 @@
+{
+  "promptKey": "captcha.prompt.yourmum",
+  "difficulty": 1,
+  "values": [
+    "minecraft:item/wooden_hoe",
+    "minecraft:item/stone_hoe",
+    "minecraft:item/iron_hoe",
+    "minecraft:item/golden_hoe",
+    "minecraft:item/diamond_hoe",
+    "minecraft:item/netherite_hoe"
+  ]
+}

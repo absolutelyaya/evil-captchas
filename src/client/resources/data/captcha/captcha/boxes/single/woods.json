@@ -7,8 +7,5 @@
     ["sky", "tree"], ["sky", "tree"], ["sky", "tree"], ["tree"],
     ["grass", "tree"], ["grass","tree"], ["grass", "tree"], ["grass", "tree"],
     ["grass"], ["grass"], ["grass"], ["grass", "dog"]
-  ],
-  "prompts": [
-    "sky", "tree", "dog", "grass"
   ]
 }

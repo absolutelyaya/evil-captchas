@@ -1,0 +1,12 @@
+{
+  "promptKey": "captcha.prompt.shovel",
+  "difficulty": 1,
+  "values": [
+    "minecraft:item/wooden_shovel",
+    "minecraft:item/stone_shovel",
+    "minecraft:item/iron_shovel",
+    "minecraft:item/golden_shovel",
+    "minecraft:item/diamond_shovel",
+    "minecraft:item/netherite_shovel"
+  ]
+}

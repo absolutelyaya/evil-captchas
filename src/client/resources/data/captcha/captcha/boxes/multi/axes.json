@@ -1,0 +1,12 @@
+{
+  "promptKey": "captcha.prompt.axe",
+  "difficulty": 1,
+  "values": [
+    "minecraft:item/wooden_axe",
+    "minecraft:item/stone_axe",
+    "minecraft:item/iron_axe",
+    "minecraft:item/golden_axe",
+    "minecraft:item/diamond_axe",
+    "minecraft:item/netherite_axe"
+  ]
+}

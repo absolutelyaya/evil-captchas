@@ -1,0 +1,12 @@
+{
+  "promptKey": "captcha.prompt.pickaxe",
+  "difficulty": 1,
+  "values": [
+    "minecraft:item/wooden_pickaxe",
+    "minecraft:item/stone_pickaxe",
+    "minecraft:item/iron_pickaxe",
+    "minecraft:item/golden_pickaxe",
+    "minecraft:item/diamond_pickaxe",
+    "minecraft:item/netherite_pickaxe"
+  ]
+}

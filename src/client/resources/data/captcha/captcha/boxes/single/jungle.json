@@ -7,8 +7,5 @@
     ["tree", "sky"], ["tree", "sky", "bamboo"], ["tree", "sky", "bamboo"], ["tree", "sky", "bamboo"],
     ["tree", "parrot"], ["tree", "parrot"], ["tree", "bamboo"], ["tree", "bamboo"],
     ["tree"], ["tree", "bamboo"], ["tree", "bamboo"], ["tree", "bamboo"]
-  ],
-  "prompts": [
-    "tree", "sky", "cloud", "parrot", "bamboo"
   ]
 }

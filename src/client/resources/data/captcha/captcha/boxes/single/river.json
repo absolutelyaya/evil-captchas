@@ -7,8 +7,5 @@
     ["water", "squid", "sand"], ["water", "squid", "sand"], ["water", "squid", "sand"], ["water", "salmon", "clay"],
     ["water", "sand", "clay"], ["water", "sand"], ["water", "sand"], ["water", "sand"],
     ["water"], ["water", "sand"], ["water", "sand"], ["water", "sand"]
-  ],
-  "prompts": [
-    "water", "squid", "sand", "sugar cane", "clay", "salmon"
   ]
 }

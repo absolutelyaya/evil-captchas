@@ -20,11 +20,16 @@ public class CAPTCHA implements ModInitializer
 	
 	public static Identifier identifier(String path)
 	{
+		if(path.contains(":"))
+			return Identifier.tryParse(path);
 		return Identifier.of(MOD_ID, path);
 	}
 	
 	public static Identifier texIdentifier(String path)
 	{
+		String[] segments = path.split(":");
+		if(segments.length == 2)
+			return Identifier.of(segments[0], "textures/" + segments[1] + ".png");
 		return Identifier.of(MOD_ID, "textures/" + path + ".png");
 	}
 }

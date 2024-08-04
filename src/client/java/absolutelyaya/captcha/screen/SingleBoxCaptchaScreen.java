@@ -1,23 +1,27 @@
 package absolutelyaya.captcha.screen;
 
-import absolutelyaya.captcha.data.BoxCaptchaData;
-import absolutelyaya.captcha.data.BoxCaptchaDataManager;
+import absolutelyaya.captcha.data.SingleBoxCaptchaData;
+import absolutelyaya.captcha.data.SingleBoxCaptchaDataManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
-public class SingleBoxCaptchaScreen extends AbstractBoxCaptchaScreen
+import java.util.ArrayList;
+import java.util.List;
+
+public class SingleBoxCaptchaScreen extends AbstractCaptchaScreen
 {
 	final static String TRANSLATION_KEY = "screen.captcha.boxes.single.";
-	final BoxCaptchaData data;
+	final SingleBoxCaptchaData data;
 	final boolean[][] selection;
 	final String prompt;
+	protected List<ButtonWidget> boxButtons = new ArrayList<>();
 	
 	protected SingleBoxCaptchaScreen(float difficulty)
 	{
 		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
-		data = BoxCaptchaDataManager.getRandom(difficulty);
+		data = SingleBoxCaptchaDataManager.getRandom(difficulty);
 		selection = new boolean[data.subdivisions()][data.subdivisions()];
 		prompt = data.prompts().get(random.nextInt(data.prompts().size()));
 	}
@@ -77,9 +81,9 @@ public class SingleBoxCaptchaScreen extends AbstractBoxCaptchaScreen
 	}
 	
 	@Override
-	protected void onPressedProceed()
+	protected void onClickedProceed()
 	{
-		super.onPressedProceed();
+		super.onClickedProceed();
 		int accuracy = 0, maxAccuracy = 0;
 		for (int x = 0; x < data.subdivisions(); x++)
 		{

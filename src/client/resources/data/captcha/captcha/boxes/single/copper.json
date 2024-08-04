@@ -7,8 +7,5 @@
     ["copper", "lamp"], ["copper", "lamp"], ["copper", "lamp"], ["copper", "lamp"],
     ["copper"], ["water", "copper"], ["water"], ["water", "copper"],
     ["copper"], ["water", "copper"], ["water"], ["water"]
-  ],
-  "prompts": [
-    "copper", "lamp", "water"
   ]
 }
