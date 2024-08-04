@@ -1,0 +1,14 @@
+{
+  "texture": "gui/boxes/single/water_cavern",
+  "difficulty": 1,
+  "subdivisions": 4,
+  "values": [
+    ["water"], ["water"], ["water", "bubbles"], ["water"],
+    ["water"], ["water"], ["water", "bubbles"], ["water"],
+    ["water"], ["water"], ["water", "bubbles"], ["water", "magma"],
+    ["water"], ["water", "magma"], ["water", "magma", "bubbles"], ["water", "magma"]
+  ],
+  "prompts": [
+    "water", "magma", "bubbles"
+  ]
+}

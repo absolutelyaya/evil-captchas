@@ -1,0 +1,14 @@
+{
+  "texture": "gui/boxes/single/island",
+  "difficulty": 1,
+  "subdivisions": 4,
+  "values": [
+    ["water"], ["water", "island", "tree"], ["water", "island", "tree"], ["water", "island", "tree"],
+    ["water", "island", "tree"], ["island", "tree"], ["island", "tree"], ["water", "island", "tree", "sand"],
+    ["water", "island", "tree"], ["water", "island", "tree", "stone"], ["island", "tree", "sand", "stone"], ["water", "island", "tree", "sand"],
+    ["water", "island", "tree"], ["water", "island", "tree", "stone"], ["water", "island", "tree", "stone"], ["water", "island", "tree", "stone"]
+  ],
+  "prompts": [
+    "water", "island", "tree", "sand", "stone"
+  ]
+}

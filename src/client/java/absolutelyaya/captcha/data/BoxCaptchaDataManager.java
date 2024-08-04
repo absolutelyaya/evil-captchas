@@ -53,12 +53,18 @@ public class BoxCaptchaDataManager extends JsonDataLoader
 			float difficulty = JsonHelper.getFloat(json, "difficulty");
 			int subdivisions = JsonHelper.getInt(json, "subdivisions");
 			List<List<String>> valueList = new ArrayList<>();
+			List<String> promptList = new ArrayList<>();
 			JsonHelper.getArray(json, "values").forEach(i -> {
 				List<String> subList = new ArrayList<>();
-				i.getAsJsonArray().forEach(ii -> subList.add(ii.getAsString()));
+				i.getAsJsonArray().forEach(ii -> {
+					String val = ii.getAsString();
+					if(!promptList.contains(val))
+						promptList.add(val);
+					subList.add(val);
+				});
 				valueList.add(subList);
 			});
-			builder.put(id, new BoxCaptchaData(CAPTCHA.texIdentifier(texture), difficulty, subdivisions, valueList));
+			builder.put(id, new BoxCaptchaData(CAPTCHA.texIdentifier(texture), difficulty, subdivisions, valueList, promptList));
 		});
 		ALL_BOXES = builder.build();
 	}

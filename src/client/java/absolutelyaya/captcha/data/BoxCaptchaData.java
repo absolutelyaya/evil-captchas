@@ -4,7 +4,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 
-public record BoxCaptchaData(Identifier texture, float difficulty, int subdivisions, List<List<String>> values)
+public record BoxCaptchaData(Identifier texture, float difficulty, int subdivisions, List<List<String>> values, List<String> prompts)
 {
 
 }

@@ -1,0 +1,14 @@
+{
+  "texture": "gui/boxes/single/woods",
+  "difficulty": -999,
+  "subdivisions": 4,
+  "values": [
+    [], [], [], [],
+    [], [], [], [],
+    [], [], [], [],
+    [], [], [], []
+  ],
+  "prompts": [
+    
+  ]
+}

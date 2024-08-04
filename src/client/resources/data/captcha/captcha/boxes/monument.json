@@ -1,0 +1,14 @@
+{
+  "texture": "gui/boxes/single/monument",
+  "difficulty": 1,
+  "subdivisions": 4,
+  "values": [
+    ["water"], ["water"], ["water", "guardian"], ["water"],
+    ["water", "monument"], ["water", "guardian", "monument"], ["water", "guardian", "seaweed"], ["water", "seaweed"],
+    ["water", "monument"], ["water", "monument"], ["water", "monument", "seaweed"], ["water", "monument", "seaweed"],
+    ["water", "monument"], ["water", "monument"], ["water", "monument", "seaweed"], ["water", "monument", "seaweed"]
+  ],
+  "prompts": [
+    "water", "guardian", "monument", "seaweed"
+  ]
+}

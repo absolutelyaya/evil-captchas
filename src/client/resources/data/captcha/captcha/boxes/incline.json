@@ -1,0 +1,14 @@
+{
+  "texture": "gui/boxes/single/incline",
+  "difficulty": 1,
+  "subdivisions": 4,
+  "values": [
+    ["sky", "tree", "dirt", "stone"], ["tree", "dirt", "stone"], ["sky", "tree", "dirt", "stone"], ["sky", "tree"],
+    ["dirt", "stone", "cow"], ["dirt", "stone", "cow"], ["sky", "tree", "dirt", "stone"], ["sky", "tree", "dirt", "stone"],
+    ["dirt", "stone", "cow"], ["dirt", "stone", "cow"], ["dirt", "stone"], ["dirt", "stone"],
+    ["dirt", "stone"], ["dirt", "stone"], ["dirt", "stone", "cow"], ["dirt", "stone"]
+  ],
+  "prompts": [
+    "sky", "tree", "dirt", "stone", "cow"
+  ]
+}

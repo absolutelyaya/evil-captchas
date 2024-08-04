@@ -1,0 +1,14 @@
+{
+  "texture": "gui/boxes/single/river",
+  "difficulty": 1,
+  "subdivisions": 4,
+  "values": [
+    ["water", "squid", "sand"], ["water", "sand", "sugar cane"], ["water", "sand", "sugar cane"], ["water"],
+    ["water", "squid", "sand"], ["water", "squid", "sand"], ["water", "squid", "sand"], ["water", "salmon", "clay"],
+    ["water", "sand", "clay"], ["water", "sand"], ["water", "sand"], ["water", "sand"],
+    ["water"], ["water", "sand"], ["water", "sand"], ["water", "sand"]
+  ],
+  "prompts": [
+    "water", "squid", "sand", "sugar cane", "clay", "salmon"
+  ]
+}

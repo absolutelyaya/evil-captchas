@@ -3,6 +3,7 @@
   "screen.captcha.generic.proceed": "proceed",
   "screen.captcha.boxes.single.title": "Single Image Boxes",
   "screen.captcha.boxes.single.instruction0": "Click on all boxes containing %s.",
+  "screen.captcha.boxes.single.instruction1": "You need to be at least %s Percent correct.",
   "screen.captcha.boxes.multi.title": "Multi Image Boxes",
   "screen.captcha.boxes.multi.instruction0": "Click on all boxes containing %s.",
   "screen.captcha.boxes.multi.instruction1": "Click on §6PROCEED§r once none are left.",

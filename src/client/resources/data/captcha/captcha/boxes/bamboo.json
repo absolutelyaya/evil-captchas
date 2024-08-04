@@ -1,0 +1,14 @@
+{
+  "texture": "gui/boxes/single/bamboo",
+  "difficulty": 1,
+  "subdivisions": 4,
+  "values": [
+    ["bamboo", "sky"], ["bamboo", "sky"], ["bamboo", "sky"], ["bamboo", "sky"],
+    ["bamboo"], ["bamboo"], ["bamboo"], ["bamboo"],
+    ["bamboo"], ["bamboo"], ["bamboo"], ["bamboo"],
+    ["bamboo"], ["bamboo"], ["bamboo"], ["bamboo"]
+  ],
+  "prompts": [
+    "bamboo", "sky"
+  ]
+}

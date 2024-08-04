@@ -6,13 +6,16 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.random.Random;
 
 public abstract class AbstractCaptchaScreen extends Screen
 {
+	protected static Random random = Random.create();
 	private boolean success;
 	private int nextDelay = -1;
-	private final float difficulty;
+	protected final float difficulty;
 	ButtonWidget proceedButton;
 	
 	protected AbstractCaptchaScreen(Text title, float difficulty)
@@ -41,7 +44,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 				if(success)
 					close();
 				else
-					openRandomCaptcha(client, difficulty - 1f);
+					openRandomCaptcha(client, Math.max(difficulty - 1f, 3f));
 			}
 		}
 	}
@@ -64,34 +67,39 @@ public abstract class AbstractCaptchaScreen extends Screen
 		matrices.pop();
 		matrices.translate(0f, height / 2f - 16f, 0);
 		drawContainer(context, matrices);
-		matrices.pop();
+		matrices.translate(getContainerHalfSize() + 4, -getContainerHalfSize(), 0);
 		drawInstructions(context, matrices);
+		matrices.pop();
 	}
 	
 	public void drawContainer(DrawContext context, MatrixStack matrices)
 	{
 		int boxSize = getContainerHalfSize();
-		context.fill(-boxSize - 1, -boxSize - 1, boxSize + 1, boxSize + 1, 0x88000000);
-		context.drawBorder(-boxSize, -boxSize, boxSize * 2, boxSize * 2, 0xffffffff);
+		context.fill(-boxSize - 2, -boxSize - 2, boxSize + 2, boxSize + 2, 0x88000000);
+		context.drawBorder(-boxSize - 1, -boxSize - 1, boxSize * 2 + 2, boxSize * 2 + 2, 0xffffffff);
 	}
 	
 	public void drawInstructions(DrawContext context, MatrixStack matrices)
 	{
 		for (int i = 0; i < getInstructionLines(); i++)
 		{
+			//TODO: break lines so they don't go off Screen
 			String key = getTranslationKey() + "instruction" + i;
+			context.drawText(textRenderer, "- " + getInstructionText(i, key).getString(), 0, i * textRenderer.fontHeight, 0xffffffff, true);
 		}
 	}
 	
 	public int getContainerHalfSize()
 	{
-		return 64;
+		return 70;
 	}
 	
 	protected void onComplete()
 	{
 		success = true;
 		nextDelay = 20;
+		if(client != null && client.player != null)
+			client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f, 1f);
 	}
 	
 	protected void onFail()
@@ -105,13 +113,14 @@ public abstract class AbstractCaptchaScreen extends Screen
 	protected void onPressedProceed()
 	{
 		proceedButton.active = false;
-		onFail();
 	}
 	
 	protected int getInstructionLines()
 	{
 		return 1;
 	}
+	
+	protected abstract Text getInstructionText(int i, String prefix);
 	
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
@@ -128,7 +137,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	abstract String getTranslationKey();
 	
-	protected boolean allowInput()
+	protected boolean isAllowInput()
 	{
 		return nextDelay == -1;
 	}
