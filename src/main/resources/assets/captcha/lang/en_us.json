@@ -1,6 +1,7 @@
 {
   "screen.captcha.generic.instruction": "Please complete this Test to proceed",
   "screen.captcha.generic.proceed": "proceed",
+  "screen.captcha.generic.input": "Type your answer here",
   "screen.captcha.boxes.single.title": "Single Image Boxes",
   "screen.captcha.boxes.single.instruction0": "Click on all boxes containing %s.",
   "screen.captcha.boxes.single.instruction1": "You need to be at least %s Percent correct.",
@@ -16,6 +17,7 @@
   "screen.captcha.comprehension.instruction.b": "Click on the %s.",
   "screen.captcha.math.title": "Math",
   "screen.captcha.math.instruction0": "Solve the Equation.",
+  "screen.captcha.math.instruction1": "The Result is always a truncated Integral Number.",
   "screen.captcha.image-search.title": "Image Search",
   "screen.captcha.image-search.instruction0": "Click on the %s.",
   "screen.captcha.wimmelbild.title": "Wimmelbild",
@@ -24,7 +26,6 @@
   "screen.captcha.rorschach.instruction.b": "How does this Image make you feel ?",
   "screen.captcha.rorschach.instruction.c": "Summarize your thoughts on this image in 4 words or less.",
   "screen.captcha.rorschach.instruction.d": "Do you find comfort in entropy ?",
-  "screen.captcha.rorschach.instruction.input": "Please type your answer here",
   "screen.captcha.gambling.title": "Gambling Addiction",
   "screen.captcha.gambling.instruction0": "Raise your balance above %s.",
   "screen.captcha.gambling.instruction1": "The higher your bet, the more you (can) win.",

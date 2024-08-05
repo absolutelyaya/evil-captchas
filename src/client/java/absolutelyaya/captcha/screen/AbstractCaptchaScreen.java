@@ -7,8 +7,11 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.random.Random;
+
+import java.util.List;
 
 public abstract class AbstractCaptchaScreen extends Screen
 {
@@ -81,11 +84,15 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	public void drawInstructions(DrawContext context, MatrixStack matrices)
 	{
+		int totalLines = 0;
 		for (int i = 0; i < getInstructionLines(); i++)
 		{
 			//TODO: break lines so they don't go off Screen
 			String key = getTranslationKey() + "instruction" + i;
-			context.drawText(textRenderer, "- " + getInstructionText(i, key).getString(), 0, i * textRenderer.fontHeight, 0xffffffff, true);
+			Text t = Text.of("- " + getInstructionText(i, key).getString());
+			List<OrderedText> lines = textRenderer.wrapLines(t, width / 2 - getContainerHalfSize() - 8);
+			for (int j = 0; j < lines.size(); j++)
+				context.drawText(textRenderer, lines.get(j), j > 0 ? 10 : 0, (totalLines++) * textRenderer.fontHeight, 0xffffffff, true);
 		}
 	}
 	
@@ -125,7 +132,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
 		AbstractCaptchaScreen captcha;
-		captcha = new MultiBoxCaptchaScreen(difficulty);
+		captcha = new MathCaptchaScreen(difficulty);
 		client.setScreen(captcha);
 	}
 	

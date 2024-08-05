@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public class CAPTCHAClient implements ClientModInitializer
 {
+	float difficulty = 5f;
+	
 	@Override
 	public void onInitializeClient()
 	{
@@ -16,7 +18,10 @@ public class CAPTCHAClient implements ClientModInitializer
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if(client.world != null && !(client.currentScreen instanceof AbstractCaptchaScreen))
-				AbstractCaptchaScreen.openRandomCaptcha(client, 5f);
+			{
+				AbstractCaptchaScreen.openRandomCaptcha(client, difficulty);
+				difficulty++;
+			}
 		});
 	}
 }
