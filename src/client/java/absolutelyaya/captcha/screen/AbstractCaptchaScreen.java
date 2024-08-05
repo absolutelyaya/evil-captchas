@@ -1,6 +1,8 @@
 package absolutelyaya.captcha.screen;
 
 import absolutelyaya.captcha.registry.SoundRegistry;
+import absolutelyaya.captcha.screen.widget.InputFieldWidget;
+import absolutelyaya.captcha.screen.widget.NumberFieldWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -33,6 +35,16 @@ public abstract class AbstractCaptchaScreen extends Screen
 		super.init();
 		addDrawableChild(proceedButton = new ButtonWidget.Builder(Text.translatable("screen.captcha.generic.proceed"), button -> onClickedProceed())
 								 .dimensions(width / 2 - 50, height / 2 + getContainerHalfSize() + 8, 100, 20).build());
+	}
+	
+	protected void addInputField(InputFieldWidget field)
+	{
+		addDrawableChild(field);
+		field.setX(width / 2 - 50);
+		field.setY(height / 2 + getContainerHalfSize() + 8);
+		setFocused(field);
+		
+		proceedButton.setY(proceedButton.getY() + 24);
 	}
 	
 	@Override
@@ -132,7 +144,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
 		AbstractCaptchaScreen captcha;
-		captcha = new MathCaptchaScreen(difficulty);
+		captcha = new RorschachCaptchaScreen(difficulty);
 		client.setScreen(captcha);
 	}
 	

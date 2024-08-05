@@ -1,10 +1,9 @@
 package absolutelyaya.captcha.screen;
 
 import absolutelyaya.captcha.CAPTCHA;
+import absolutelyaya.captcha.screen.widget.NumberFieldWidget;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -13,7 +12,7 @@ public class MathCaptchaScreen extends AbstractCaptchaScreen
 	static final String TRANSLATION_KEY = "screen.captcha.math.";
 	final String equation;
 	final int result;
-	NumberField field;
+	NumberFieldWidget field;
 	boolean success;
 	
 	protected MathCaptchaScreen(float difficulty)
@@ -127,13 +126,8 @@ public class MathCaptchaScreen extends AbstractCaptchaScreen
 		String t = "";
 		if(field != null)
 			t = field.getText();
-		addDrawableChild(field = new NumberField(textRenderer, 100, 20, this::onClickedProceed));
-		field.setX(width / 2 - 50);
-		field.setY(height / 2 + getContainerHalfSize() + 8);
+		addInputField(field = new NumberFieldWidget(textRenderer, 100, 20, this::onClickedProceed));
 		field.setText(t);
-		setFocused(field);
-		
-		proceedButton.setY(proceedButton.getY() + 24);
 	}
 	
 	@Override
@@ -173,42 +167,5 @@ public class MathCaptchaScreen extends AbstractCaptchaScreen
 	String getTranslationKey()
 	{
 		return TRANSLATION_KEY;
-	}
-	
-	static class NumberField extends TextFieldWidget
-	{
-		final Runnable onConfirm;
-		
-		public NumberField(TextRenderer textRenderer, int width, int height, Runnable onConfirm)
-		{
-			super(textRenderer, width, height, Text.translatable("screen.captcha.generic.input"));
-			this.onConfirm = onConfirm;
-		}
-		
-		public boolean charTyped(char chr, int modifiers)
-		{
-			if (isActive() && isValidChar(chr))
-			{
-				write(Character.toString(chr));
-				return true;
-			}
-			return false;
-		}
-		
-		@Override
-		public boolean keyPressed(int keyCode, int scanCode, int modifiers)
-		{
-			if(isFocused() && isActive() && keyCode == 257)
-			{
-				onConfirm.run();
-				return true;
-			}
-			return super.keyPressed(keyCode, scanCode, modifiers);
-		}
-		
-		boolean isValidChar(char c)
-		{
-			return c == '-' || Character.isDigit(c);
-		}
 	}
 }
