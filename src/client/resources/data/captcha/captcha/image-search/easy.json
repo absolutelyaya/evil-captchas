@@ -1,0 +1,20 @@
+{
+  "difficulty": 1,
+  "backgrounds": [
+    "gui/boxes/single/woods",
+    "gui/boxes/single/evil",
+    "gui/boxes/single/bamboo"
+  ],
+  "overlays": [
+
+  ],
+  "objects": [
+    {"prompt": "item.minecraft.apple", "texture": "minecraft:item/apple"},
+    {"prompt": "item.minecraft.golden_apple", "texture": "minecraft:item/golden_apple"},
+    {"prompt": "block.minecraft.dandelion", "texture": "minecraft:block/dandelion"},
+    {"prompt": "item.minecraft.stick", "texture": "minecraft:item/stick"},
+    {"prompt": "item.minecraft.diamond", "texture": "minecraft:item/diamond"},
+    {"prompt": "item.minecraft.porkchop", "texture": "minecraft:item/porkchop"},
+    {"prompt": "captcha.prompt.wizard", "texture": "gui/wizards/wzrd"}
+  ]
+}

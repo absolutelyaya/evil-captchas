@@ -1,5 +1,6 @@
 package absolutelyaya.captcha;
 
+import absolutelyaya.captcha.data.ImageSearchCaptchaPoolManager;
 import absolutelyaya.captcha.data.MultiBoxCaptchaPoolManager;
 import absolutelyaya.captcha.data.SingleBoxCaptchaDataManager;
 import absolutelyaya.captcha.screen.AbstractCaptchaScreen;
@@ -15,6 +16,7 @@ public class CAPTCHAClient implements ClientModInitializer
 	{
 		new SingleBoxCaptchaDataManager();
 		new MultiBoxCaptchaPoolManager();
+		new ImageSearchCaptchaPoolManager();
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if(client.world != null && !(client.currentScreen instanceof AbstractCaptchaScreen))

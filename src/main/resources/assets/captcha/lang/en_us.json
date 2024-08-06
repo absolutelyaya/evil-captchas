@@ -21,6 +21,7 @@
   "screen.captcha.image-search.title": "Image Search",
   "screen.captcha.image-search.instruction0": "Click on the %s.",
   "screen.captcha.wimmelbild.title": "Wimmelbild",
+  "screen.captcha.wimmelbild.instruction0": "Click on the %s.",
   "screen.captcha.rorschach.title": "Rorschach",
   "screen.captcha.rorschach.instruction0": "What do you see in this image ?",
   "screen.captcha.rorschach.instruction1": "How does this Image make you feel ?",
@@ -49,5 +50,6 @@
   "captcha.prompt.shovel": "Shovels",
   "captcha.prompt.axe": "Axes",
   "captcha.prompt.hoe": "Hoes",
-  "captcha.prompt.yourmum": "Your Mum"
+  "captcha.prompt.yourmum": "Your Mum",
+  "captcha.prompt.wizard": "Wizard"
 }
