@@ -64,6 +64,8 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button)
 	{
+		if(!isAllowInput())
+			return false;
 		int x = width / 2 - getContainerHalfSize(), y = height / 2 - getContainerHalfSize();
 		if(mouseX > x && mouseY > y && mouseX < x + getContainerHalfSize() * 2 && mouseY < y + getContainerHalfSize() * 2)
 		{
@@ -132,7 +134,7 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 	}
 	
 	@Override
-	protected boolean hasProceedButton()
+	protected boolean isHasProceedButton()
 	{
 		return false;
 	}

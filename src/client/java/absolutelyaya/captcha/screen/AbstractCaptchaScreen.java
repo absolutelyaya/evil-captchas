@@ -32,7 +32,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	protected void init()
 	{
 		super.init();
-		if(hasProceedButton())
+		if(isHasProceedButton())
 			addDrawableChild(proceedButton = new ButtonWidget.Builder(Text.translatable("screen.captcha.generic.proceed"), button -> onClickedProceed())
 									 .dimensions(width / 2 - 50, height / 2 + getContainerHalfSize() + 8, 100, 20).build());
 	}
@@ -44,7 +44,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 		field.setY(height / 2 + getContainerHalfSize() + 8);
 		setFocused(field);
 		
-		if(hasProceedButton())
+		if(isHasProceedButton())
 			proceedButton.setY(proceedButton.getY() + 24);
 	}
 	
@@ -132,7 +132,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	protected void onClickedProceed()
 	{
-		if(hasProceedButton())
+		if(isHasProceedButton())
 			proceedButton.active = false;
 	}
 	
@@ -146,10 +146,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
 		AbstractCaptchaScreen captcha;
-		if(random.nextBoolean())
-			captcha = new ImageSearchCaptchaScreen(difficulty);
-		else
-			captcha = new WimmelbildCaptchaScreen(difficulty);
+		captcha = new WizardCaptchaScreen(difficulty);
 		client.setScreen(captcha);
 	}
 	
@@ -166,7 +163,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 		return nextDelay == -1;
 	}
 	
-	protected boolean hasProceedButton()
+	protected boolean isHasProceedButton()
 	{
 		return true;
 	}
