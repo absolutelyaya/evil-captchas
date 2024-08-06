@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
@@ -19,16 +20,18 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 	final Identifier background, overlay;
 	final List<Element> elements = new ArrayList<>();
 	final Element promptElement;
+	boolean failed;
 	
-	protected ImageSearchCaptchaScreen(float difficulty)
+	protected ImageSearchCaptchaScreen(Text text, float difficulty)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(text, difficulty);
 		pool = ImageSearchCaptchaPoolManager.getRandom(difficulty);
 		String[] prompts = pool.objects().keySet().toArray(String[]::new);
 		prompt = prompts[random.nextInt(prompts.length)];
+		int size = 16 + random.nextInt(16);
 		elements.add(promptElement = new Element(
-				random.nextBetween(0, getContainerHalfSize() * 2) - 8,
-				random.nextBetween(0, getContainerHalfSize() * 2) - 8, prompt));
+				random.nextBetween(0, getContainerHalfSize() * 2) - size / 2,
+				random.nextBetween(0, getContainerHalfSize() * 2) - size / 2, prompt, size));
 		for (int i = 0; i < getImageCount(); i++)
 		{
 			String id = null;
@@ -38,7 +41,9 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 				if(!id.isEmpty() && !id.equals(prompt))
 					break;
 			}
-			elements.add(new Element(random.nextBetween(0, getContainerHalfSize() * 2 - 16), random.nextBetween(0, getContainerHalfSize() * 2 - 16), id));
+			size = 16 + random.nextInt(16);
+			elements.add(new Element(random.nextBetween(0, getContainerHalfSize() * 2 - size / 2), random.nextBetween(0, getContainerHalfSize() * 2 - size / 2), id,
+					Math.max(random.nextInt(32), size)));
 		}
 		if(!pool.backgrounds().isEmpty())
 			background = CAPTCHA.texIdentifier(pool.backgrounds().get(random.nextInt(pool.backgrounds().size())));
@@ -48,6 +53,12 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 			overlay = CAPTCHA.texIdentifier(pool.overlays().get(random.nextInt(pool.overlays().size())));
 		else
 			overlay = null;
+		Collections.shuffle(elements);
+	}
+	
+	public ImageSearchCaptchaScreen(float difficulty)
+	{
+		this(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
 	}
 	
 	@Override
@@ -56,7 +67,8 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 		int x = width / 2 - getContainerHalfSize(), y = height / 2 - getContainerHalfSize();
 		if(mouseX > x && mouseY > y && mouseX < x + getContainerHalfSize() * 2 && mouseY < y + getContainerHalfSize() * 2)
 		{
-			if(mouseX > x + promptElement.x && mouseX < x + promptElement.x + 16 && mouseY > y + promptElement.y && mouseY < y + promptElement.y + 16)
+			int promptX = promptElement.x, promptY = promptElement.y, promptSize = promptElement.size;
+			if(mouseX > x + promptX && mouseX < x + promptX + promptSize && mouseY > y + promptY && mouseY < y + promptY + promptSize)
 				onComplete();
 			else
 				onFail();
@@ -82,7 +94,11 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 		if(background != null)
 			context.drawTexture(background, 0, 0, 0, 0, size, size, size, size);
 		for (Element image : elements)
-			context.drawTexture(CAPTCHA.texIdentifier(pool.objects().get(image.prompt)), image.x, image.y, 0, 0, 16, 16, 16, 16);
+		{
+			int s = image.size;
+			if(!failed || image.prompt.equals(prompt))
+				context.drawTexture(CAPTCHA.texIdentifier(pool.objects().get(image.prompt)), image.x, image.y, 0, 0, s, s, s, s);
+		}
 		if(overlay != null)
 			context.drawTexture(overlay, 0, 0, 0, 0, size, size, size, size);
 		context.disableScissor();
@@ -94,6 +110,13 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 	{
 		super.onClickedProceed();
 		onComplete();
+	}
+	
+	@Override
+	protected void onFail()
+	{
+		super.onFail();
+		failed = true;
 	}
 	
 	@Override
@@ -114,7 +137,7 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 		return false;
 	}
 	
-	record Element(int x, int y, String prompt)
+	record Element(int x, int y, String prompt, int size)
 	{
 	
 	}
