@@ -146,7 +146,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
 		AbstractCaptchaScreen captcha;
-		captcha = new PuzzleSlideCaptchaScreen(difficulty);
+		captcha = new ButterflyCaptchaScreen(difficulty);
 		client.setScreen(captcha);
 	}
 	
