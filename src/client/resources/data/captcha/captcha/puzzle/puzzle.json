@@ -1,0 +1,14 @@
+{
+  "textures": [
+    "gui/boxes/single/woods",
+    "gui/boxes/single/evil",
+    "gui/boxes/single/bamboo",
+    "gui/boxes/single/copper",
+    "gui/boxes/single/incline",
+    "gui/boxes/single/island",
+    "gui/boxes/single/jungle",
+    "gui/boxes/single/monument",
+    "gui/boxes/single/water_cavern",
+    "gui/boxes/single/river"
+  ]
+}
