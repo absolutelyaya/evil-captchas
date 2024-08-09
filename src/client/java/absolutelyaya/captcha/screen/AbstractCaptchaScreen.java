@@ -100,7 +100,6 @@ public abstract class AbstractCaptchaScreen extends Screen
 		int totalLines = 0;
 		for (int i = 0; i < getInstructionLines(); i++)
 		{
-			//TODO: break lines so they don't go off Screen
 			String key = getTranslationKey() + "instruction" + i;
 			Text t = Text.of("- " + getInstructionText(i, key).getString());
 			List<OrderedText> lines = textRenderer.wrapLines(t, width / 2 - getContainerHalfSize() - 8);
@@ -146,7 +145,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
 		AbstractCaptchaScreen captcha;
-		captcha = new ButterflyCaptchaScreen(difficulty);
+		captcha = new ComprehensionTestCaptchaScreen(difficulty);
 		client.setScreen(captcha);
 	}
 	
