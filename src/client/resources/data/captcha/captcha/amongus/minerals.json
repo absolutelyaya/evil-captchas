@@ -1,0 +1,23 @@
+{
+  "difficulty": 5,
+  "crewmates": [
+    "minecraft:item/iron_ingot",
+    "minecraft:item/gold_ingot",
+    "minecraft:item/copper_ingot",
+    "minecraft:item/diamond",
+    "minecraft:item/emerald",
+    "minecraft:item/raw_iron",
+    "minecraft:item/raw_gold",
+    "minecraft:item/raw_copper",
+    "minecraft:item/coal",
+    "minecraft:item/netherite_scrap",
+    "minecraft:item/netherite_ingot"
+  ],
+  "impostors": [
+    "minecraft:item/stick",
+    "minecraft:item/mutton",
+    "minecraft:item/iron_pickaxe",
+    "minecraft:item/cookie",
+    "minecraft:item/charcoal"
+  ]
+}

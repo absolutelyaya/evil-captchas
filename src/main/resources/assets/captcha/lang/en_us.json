@@ -40,6 +40,8 @@
   "screen.captcha.wires.instruction1": "You are supplied with a bomb defusal manual.",
   "screen.captcha.amongus.title": "There is an Impostor among us",
   "screen.captcha.amongus.instruction0": "Who is the Impostor ?",
+  "screen.captcha.amongus.correct": "They were the Impostor.",
+  "screen.captcha.amongus.incorrect": "They were NOT the Impostor.",
   "screen.captcha.wizard.title": "THE WIZARD ESCAPED",
   "screen.captcha.wizard.instruction0": "QUICK,, CAPTURE THE MALIGNANT LITTLE CRITTER!!",
   "screen.captcha.butterflies.title": "Butterflies",

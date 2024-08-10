@@ -1,0 +1,20 @@
+{
+  "difficulty": 5,
+  "crewmates": [
+    "minecraft:item/apple",
+    "minecraft:item/rotten_flesh",
+    "minecraft:item/porkchop",
+    "minecraft:item/dried_kelp",
+    "minecraft:item/carrot",
+    "minecraft:item/golden_carrot",
+    "minecraft:item/cooked_beef",
+    "minecraft:item/cookie"
+  ],
+  "impostors": [
+    "minecraft:item/feather",
+    "minecraft:item/stick",
+    "minecraft:item/egg",
+    "minecraft:item/wheat",
+    "minecraft:item/gold_nugget"
+  ]
+}

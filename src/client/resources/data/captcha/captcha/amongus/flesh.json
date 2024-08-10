@@ -1,0 +1,16 @@
+{
+  "difficulty": 1,
+  "crewmates": [
+    "minecraft:item/porkchop",
+    "minecraft:item/beef",
+    "minecraft:item/chicken",
+    "minecraft:item/mutton",
+    "minecraft:item/rabbit"
+  ],
+  "impostors": [
+    "minecraft:item/cooked_porkchop",
+    "minecraft:item/cod",
+    "minecraft:item/feather",
+    "minecraft:item/leather"
+  ]
+}

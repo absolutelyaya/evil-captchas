@@ -1,0 +1,19 @@
+{
+  "difficulty": 1,
+  "crewmates": [
+    "minecraft:item/coal",
+    "minecraft:item/charcoal",
+    "minecraft:item/stick",
+    "minecraft:item/dried_kelp",
+    "minecraft:item/lava_bucket",
+    "minecraft:block/oak_sapling",
+    "minecraft:item/wooden_axe"
+  ],
+  "impostors": [
+    "minecraft:item/water_bucket",
+    "minecraft:block/poppy",
+    "minecraft:item/lantern",
+    "minecraft:item/ink_sac",
+    "minecraft:item/feather"
+  ]
+}

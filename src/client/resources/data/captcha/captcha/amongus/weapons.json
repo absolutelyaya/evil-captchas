@@ -1,0 +1,19 @@
+{
+  "difficulty": 5,
+  "crewmates": [
+    "minecraft:item/iron_sword",
+    "minecraft:item/stone_axe",
+    "minecraft:item/trident",
+    "minecraft:item/bow",
+    "minecraft:item/diamond_sword",
+    "minecraft:item/iron_axe",
+    "minecraft:item/golden_sword"
+  ],
+  "impostors": [
+    "minecraft:item/iron_shovel",
+    "minecraft:item/stone_hoe",
+    "minecraft:item/stick",
+    "minecraft:item/wooden_hoe",
+    "minecraft:item/shears"
+  ]
+}

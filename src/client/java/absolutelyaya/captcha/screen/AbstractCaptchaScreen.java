@@ -145,7 +145,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
 		AbstractCaptchaScreen captcha;
-		captcha = new ComprehensionTestCaptchaScreen(difficulty);
+		captcha = new AmongusCaptchaScreen(difficulty);
 		client.setScreen(captcha);
 	}
 	
@@ -160,6 +160,11 @@ public abstract class AbstractCaptchaScreen extends Screen
 	protected boolean isAllowInput()
 	{
 		return nextDelay == -1;
+	}
+	
+	protected void setAllowInput(boolean b)
+	{
+		nextDelay = b ? -1 : Integer.MAX_VALUE;
 	}
 	
 	protected boolean isHasProceedButton()

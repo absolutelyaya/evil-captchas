@@ -1,0 +1,8 @@
+{
+  "difficulty": 10,
+  "crewmates": [
+  ],
+  "impostors": [
+    "minecraft:item/enchanted_book"
+  ]
+}

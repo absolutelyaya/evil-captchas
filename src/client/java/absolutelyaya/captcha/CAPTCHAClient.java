@@ -17,6 +17,7 @@ public class CAPTCHAClient implements ClientModInitializer
 		new ImageSearchCaptchaPoolManager();
 		new PuzzleSlideDataManager();
 		new ComprehensionTestManager();
+		new AmongusPoolManager();
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if(client.world != null && !(client.currentScreen instanceof AbstractCaptchaScreen))

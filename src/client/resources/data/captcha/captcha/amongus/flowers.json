@@ -1,0 +1,26 @@
+{
+  "difficulty": 1,
+  "crewmates": [
+    "minecraft:block/allium",
+    "minecraft:block/poppy",
+    "minecraft:block/azure_bluet",
+    "minecraft:block/oxeye_daisy",
+    "minecraft:block/lily_of_the_valley",
+    "minecraft:block/dandelion",
+    "minecraft:block/blue_orchid",
+    "minecraft:block/red_tulip",
+    "minecraft:block/orange_tulip",
+    "minecraft:block/white_tulip",
+    "minecraft:block/pink_tulip",
+    "minecraft:block/cornflower",
+    "minecraft:block/torchflower",
+    "minecraft:block/wither_rose"
+  ],
+  "impostors": [
+    "minecraft:block/short_grass",
+    "minecraft:block/fern",
+    "minecraft:block/weeping_vines_plant",
+    "minecraft:item/stick",
+    "minecraft:block/oak_sapling"
+  ]
+}
