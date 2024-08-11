@@ -18,7 +18,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 {
 	protected static Random random = Random.create();
 	private boolean success;
-	private int nextDelay = -1;
+	protected int nextDelay = -1;
 	protected final float difficulty;
 	ButtonWidget proceedButton;
 	
