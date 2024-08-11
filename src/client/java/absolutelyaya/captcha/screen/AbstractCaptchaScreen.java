@@ -149,7 +149,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 			try
 			{
 				AbstractCaptchaScreen captcha;
-				captcha = new AdvancedComprehensionTestCaptchaScreen(difficulty);
+				captcha = new WonkyTextCaptchaScreen(difficulty);
 				client.setScreen(captcha);
 				break;
 			}
