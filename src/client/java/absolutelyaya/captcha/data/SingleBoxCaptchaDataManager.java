@@ -75,7 +75,7 @@ public class SingleBoxCaptchaDataManager extends JsonDataLoader
 			return null;
 		List<SingleBoxCaptchaData> candidates = new ArrayList<>();
 		for(SingleBoxCaptchaData box : ALL_BOXES.values())
-			if(Math.abs(box.difficulty() - difficulty) <= 5f)
+			if(difficulty >= box.difficulty())
 				candidates.add(box);
 		return candidates.get(random.nextInt(candidates.size()));
 	}

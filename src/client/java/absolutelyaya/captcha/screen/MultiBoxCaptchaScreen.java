@@ -90,7 +90,7 @@ public class MultiBoxCaptchaScreen extends AbstractCaptchaScreen
 	{
 		if (boxes[x][y] == null)
 			boxes[x][y] = new Box();
-		if(random.nextFloat() < Math.min(0.25f + difficulty / 100f, 0.8f))
+		if(random.nextFloat() < 0.33f)
 			boxes[x][y].value = pool.textures().get(random.nextInt(pool.textures().size()));
 		else
 			boxes[x][y].value = allPossibleTextures.get(random.nextInt(allPossibleTextures.size()));

@@ -20,7 +20,7 @@ public class WonkyTextCaptchaScreen extends AbstractCaptchaScreen
 	
 	protected WonkyTextCaptchaScreen(float difficulty)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);;
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
 		StringBuilder sb = new StringBuilder();
 		letters = new String[7];
 		offset = new Vector2i[7];

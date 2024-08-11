@@ -71,7 +71,7 @@ public class MultiBoxCaptchaPoolManager extends JsonDataLoader
 			return null;
 		List<MultiBoxCaptchaPool> candidates = new ArrayList<>();
 		for(MultiBoxCaptchaPool pool : ALL_POOLS.values())
-			if(Math.abs(pool.difficulty() - difficulty) <= 5f)
+			if(difficulty >= pool.difficulty())
 				candidates.add(pool);
 		return candidates.get(random.nextInt(candidates.size()));
 	}

@@ -66,7 +66,7 @@ public class AmongusPoolManager extends JsonDataLoader
 	{
 		List<AmongusPool> candidates = new ArrayList<>();
 		for (AmongusPool pool : ALL_POOLS.values())
-			if(pool.difficulty() <= Math.max(difficulty, 1f))
+			if(difficulty >= pool.difficulty())
 				candidates.add(pool);
 		return candidates.get(random.nextInt(candidates.size()));
 	}

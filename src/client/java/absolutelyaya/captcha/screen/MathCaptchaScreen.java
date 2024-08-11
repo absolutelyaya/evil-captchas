@@ -61,7 +61,7 @@ public class MathCaptchaScreen extends AbstractCaptchaScreen
 	
 	int eval(String equation)
 	{
-		String equation2 = equation;
+		String equation2 = equation.replace("\n", "");
 		while(true)
 		{
 			String[] segments =  equation2.split("((?=[+-/*/])|(?<=[+-/*/]))");

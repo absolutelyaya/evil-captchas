@@ -10,12 +10,16 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.random.Random;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public abstract class AbstractCaptchaScreen extends Screen
 {
+	static final List<Pair<Integer, Function<Float, AbstractCaptchaScreen>>> screens = new ArrayList<>();
 	protected static Random random = Random.create();
 	private boolean success;
 	protected int nextDelay = -1;
@@ -144,12 +148,16 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
+		List<Function<Float, AbstractCaptchaScreen>> candidates = new ArrayList<>();
+		for (Pair<Integer, Function<Float, AbstractCaptchaScreen>> i : screens)
+			if(difficulty >= i.getLeft())
+				candidates.add(i.getRight());
 		for (int i = 0; i < 3; i++)
 		{
 			try
 			{
 				AbstractCaptchaScreen captcha;
-				captcha = new WonkyTextCaptchaScreen(difficulty);
+				captcha = candidates.get(random.nextInt(candidates.size())).apply(difficulty);
 				client.setScreen(captcha);
 				break;
 			}
@@ -181,5 +189,22 @@ public abstract class AbstractCaptchaScreen extends Screen
 	protected boolean isHasProceedButton()
 	{
 		return true;
+	}
+	
+	static {
+		screens.add(new Pair<>(0, SingleBoxCaptchaScreen::new));
+		screens.add(new Pair<>(0, MultiBoxCaptchaScreen::new));
+		screens.add(new Pair<>(0, WonkyTextCaptchaScreen::new));
+		screens.add(new Pair<>(3, i -> new PuzzleSlideCaptchaScreen(Math.max(i - 3, 1))));
+		screens.add(new Pair<>(5, i -> new ComprehensionTestCaptchaScreen(Math.max(i - 5, 1))));
+		screens.add(new Pair<>(5, i -> new ImageSearchCaptchaScreen(Math.max(i - 5, 1))));
+		screens.add(new Pair<>(5, i -> new MathCaptchaScreen(Math.max(i - 5, 1))));
+		screens.add(new Pair<>(10, i -> new RorschachCaptchaScreen(Math.max(i - 10, 1))));
+		screens.add(new Pair<>(10, i -> new WimmelbildCaptchaScreen(Math.max(i - 10, 1))));
+		screens.add(new Pair<>(15, i -> new WizardCaptchaScreen(Math.max(i - 15, 1))));
+		screens.add(new Pair<>(15, i -> new AmongusCaptchaScreen(Math.max(i - 15, 1))));
+		screens.add(new Pair<>(20, i -> new AdvancedComprehensionTestCaptchaScreen(Math.max(i - 20, 1))));
+		screens.add(new Pair<>(20, i -> new GamblingCaptchaScreen(Math.max(i - 20, 1))));
+		screens.add(new Pair<>(20, i -> new ButterflyCaptchaScreen(Math.max(i - 20, 1))));
 	}
 }

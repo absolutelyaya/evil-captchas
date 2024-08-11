@@ -84,7 +84,7 @@ public class ImageSearchCaptchaPoolManager extends JsonDataLoader
 			return null;
 		List<ImageSearchCaptchaPool> candidates = new ArrayList<>();
 		for(ImageSearchCaptchaPool pool : ALL_POOLS.values())
-			if(Math.abs(pool.difficulty() - difficulty) <= 5f)
+			if(difficulty >= pool.difficulty())
 				candidates.add(pool);
 		if(candidates.isEmpty())
 			return ALL_POOLS.values().toArray(ImageSearchCaptchaPool[]::new)[random.nextInt(ALL_POOLS.size())];
