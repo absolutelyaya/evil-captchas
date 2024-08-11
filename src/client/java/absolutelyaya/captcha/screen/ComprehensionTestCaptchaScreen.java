@@ -19,9 +19,8 @@ public class ComprehensionTestCaptchaScreen extends AbstractCaptchaScreen
 {
 	static final String TRANSLATION_KEY = "screen.captcha.comprehension.";
 	static final Identifier GLOW_TEX = CAPTCHA.texIdentifier("gui/comprehension/glow");
-	final List<ObjectInstance> objects = new ArrayList<>();
-	boolean promptType;
-	Pair<ComprehensionAdjectiveData, ComprehensionObjectData> prompt;
+	protected final List<ObjectInstance> objects = new ArrayList<>();
+	protected Pair<ComprehensionAdjectiveData, ComprehensionObjectData> prompt;
 	
 	protected ComprehensionTestCaptchaScreen(float difficulty)
 	{
@@ -113,7 +112,7 @@ public class ComprehensionTestCaptchaScreen extends AbstractCaptchaScreen
 				if(mouseX > x && mouseX < x + 16 && mouseY > y && mouseY < y + 16)
 				{
 					hit = true;
-					if(obj.object.equals(prompt.getRight()) && obj.adjectives.contains(prompt.getLeft()))
+					if(checkSolution(obj))
 					{
 						onComplete();
 						return true;
@@ -129,11 +128,15 @@ public class ComprehensionTestCaptchaScreen extends AbstractCaptchaScreen
 		return super.mouseClicked(mouseX, mouseY, button);
 	}
 	
+	protected boolean checkSolution(ObjectInstance obj)
+	{
+		return obj.object.equals(prompt.getRight()) && obj.adjectives.contains(prompt.getLeft());
+	}
+	
 	@Override
 	protected Text getInstructionText(int i, String prefix)
 	{
-		return Text.translatable(TRANSLATION_KEY + "instruction." + (promptType ? "a" : "b"),
-				Text.translatable(prompt.getLeft().name()), Text.translatable(prompt.getRight().name()));
+		return Text.translatable(TRANSLATION_KEY + "instruction.simple", Text.translatable(prompt.getLeft().name()), Text.translatable(prompt.getRight().name()));
 	}
 	
 	@Override
@@ -172,7 +175,7 @@ public class ComprehensionTestCaptchaScreen extends AbstractCaptchaScreen
 		return false;
 	}
 	
-	static class ObjectInstance
+	protected static class ObjectInstance
 	{
 		public List<ComprehensionAdjectiveData> adjectives = new ArrayList<>();
 		public ComprehensionObjectData object;

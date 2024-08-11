@@ -144,9 +144,20 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty)
 	{
-		AbstractCaptchaScreen captcha;
-		captcha = new GamblingCaptchaScreen(difficulty);
-		client.setScreen(captcha);
+		for (int i = 0; i < 3; i++)
+		{
+			try
+			{
+				AbstractCaptchaScreen captcha;
+				captcha = new AdvancedComprehensionTestCaptchaScreen(difficulty);
+				client.setScreen(captcha);
+				break;
+			}
+			catch (Exception ignored)
+			{
+			
+			}
+		}
 	}
 	
 	@Override
