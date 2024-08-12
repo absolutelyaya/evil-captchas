@@ -89,13 +89,18 @@ public class SingleBoxCaptchaScreen extends AbstractCaptchaScreen
 		{
 			for (int y = 0; y < data.subdivisions(); y++)
 			{
-				if(selection[x][y] && data.values().get(x + y * data.subdivisions()).contains(prompt))
-					accuracy++;
+				if(selection[x][y])
+				{
+					if(data.values().get(x + y * data.subdivisions()).contains(prompt))
+						accuracy++;
+					else
+						accuracy--;
+				}
 				if(data.values().get(x + y * data.subdivisions()).contains(prompt))
 					maxAccuracy++;
 			}
 		}
-		if((float)accuracy / (float)maxAccuracy > Math.min(0.5f + difficulty / 25f, 1f))
+		if((float)accuracy / (float)maxAccuracy >= Math.min(0.5f + (difficulty - 5f) / 250f, 1f))
 			onComplete();
 		else
 			onFail();
