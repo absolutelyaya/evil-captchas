@@ -1,5 +1,5 @@
 {
-  "screen.captcha.generic.instruction": "Please complete this Test to proceed",
+  "screen.captcha.generic.instruction": "Please complete this Test to %s",
   "screen.captcha.generic.proceed": "proceed",
   "screen.captcha.generic.input": "Type your answer here",
   "screen.captcha.boxes.single.title": "Single Image Boxes",
@@ -75,5 +75,13 @@
   "captcha.adjective.tiny": "Tiny",
   "captcha.adjective.nervous": "Nervous",
   "captcha.adjective.glowing": "Glowing",
-  "captcha.adjective.radiated": "Radiated"
+  "captcha.adjective.radiated": "Radiated",
+
+  "captcha.message.expired": "§4Validation Expired",
+
+  "captcha.reason.generic": "proceed",
+  "captcha.reason.generic-verify": "verify your humanity",
+  "captcha.reason.chest": "open this Chest",
+  "captcha.reason.mine": "verify a Human mined this Ore",
+  "captcha.reason.craft": "verify a Human crafted this Item"
 }

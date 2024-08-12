@@ -1,5 +1,6 @@
 package absolutelyaya.captcha;
 
+import absolutelyaya.captcha.networking.PacketRegistry;
 import absolutelyaya.captcha.registry.SoundRegistry;
 import net.fabricmc.api.ModInitializer;
 
@@ -16,6 +17,7 @@ public class CAPTCHA implements ModInitializer
 	public void onInitialize()
 	{
 		SoundRegistry.register();
+		PacketRegistry.register();
 	}
 	
 	public static Identifier identifier(String path)

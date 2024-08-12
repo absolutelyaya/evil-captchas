@@ -15,9 +15,9 @@ public class PuzzleSlideCaptchaScreen extends AbstractCaptchaScreen
 	float pieceOffset, time;
 	boolean dragging, untouched = true;
 	
-	protected PuzzleSlideCaptchaScreen(float difficulty)
+	protected PuzzleSlideCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		x = random.nextInt(getContainerHalfSize() * 2 - 16);
 		y = random.nextInt(getContainerHalfSize() * 2 - 16);
 		image = PuzzleSlideDataManager.getRandomTexture();

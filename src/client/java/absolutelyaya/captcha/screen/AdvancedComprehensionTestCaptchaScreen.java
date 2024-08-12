@@ -12,9 +12,9 @@ public class AdvancedComprehensionTestCaptchaScreen extends ComprehensionTestCap
 {
 	Pair<ComprehensionAdjectiveData, ObjectInstance> secondaryPrompt;
 	
-	protected AdvancedComprehensionTestCaptchaScreen(float difficulty)
+	protected AdvancedComprehensionTestCaptchaScreen(float difficulty, String reason)
 	{
-		super(difficulty);
+		super(difficulty, reason);
 		List<Pair<ComprehensionAdjectiveData, ObjectInstance>> candidates = new ArrayList<>();
 		for (ObjectInstance object : objects)
 		{

@@ -23,9 +23,9 @@ public class AmongusCaptchaScreen extends AbstractCaptchaScreen
 	float resultSequenceTime;
 	boolean finished;
 	
-	protected AmongusCaptchaScreen(float difficulty)
+	protected AmongusCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		AmongusPool pool = AmongusPoolManager.getRandomPool(difficulty);
 		textures.add(impostor = pool.impostors().get(random.nextInt(pool.impostors().size())));
 		for (int i = 0; i < 4; i++)

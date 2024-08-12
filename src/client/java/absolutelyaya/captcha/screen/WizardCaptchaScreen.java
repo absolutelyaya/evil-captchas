@@ -18,9 +18,9 @@ public class WizardCaptchaScreen extends AbstractCaptchaScreen
 	float time;
 	boolean jumpscare;
 	
-	protected WizardCaptchaScreen(float difficulty)
+	protected WizardCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		tex = WIZARD_TEX[random.nextInt(WIZARD_TEX.length)];
 		targetMovement = new Vector2f(random.nextFloat() - 0.5f, random.nextFloat() - 0.5f).normalize();
 	}

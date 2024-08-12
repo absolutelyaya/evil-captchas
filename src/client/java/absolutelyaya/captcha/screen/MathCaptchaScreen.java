@@ -15,9 +15,9 @@ public class MathCaptchaScreen extends AbstractCaptchaScreen
 	NumberFieldWidget field;
 	boolean success;
 	
-	protected MathCaptchaScreen(float difficulty)
+	protected MathCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		boolean multiplication = difficulty > 10f, division = difficulty > 30f;
 		int steps = 1;
 		if(difficulty > 20f)

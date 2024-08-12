@@ -22,9 +22,9 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 	final Element promptElement;
 	boolean failed;
 	
-	protected ImageSearchCaptchaScreen(Text text, float difficulty)
+	protected ImageSearchCaptchaScreen(Text text, float difficulty, String reason)
 	{
-		super(text, difficulty);
+		super(text, difficulty, reason);
 		pool = ImageSearchCaptchaPoolManager.getRandom(difficulty);
 		String[] prompts = pool.objects().keySet().toArray(String[]::new);
 		prompt = prompts[random.nextInt(prompts.length)];
@@ -56,9 +56,9 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 		Collections.shuffle(elements);
 	}
 	
-	public ImageSearchCaptchaScreen(float difficulty)
+	public ImageSearchCaptchaScreen(float difficulty, String reason)
 	{
-		this(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		this(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 	}
 	
 	@Override

@@ -18,9 +18,9 @@ public class ButterflyCaptchaScreen extends AbstractCaptchaScreen
 	List<Butterfly> eaten = new ArrayList<>();
 	float time;
 	
-	protected ButterflyCaptchaScreen(float difficulty)
+	protected ButterflyCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		for (int i = 0; i < 8 + difficulty / 20f; i++)
 		{
 			Butterfly bf = new Butterfly(random.nextInt(10) + 1, random.nextFloat());

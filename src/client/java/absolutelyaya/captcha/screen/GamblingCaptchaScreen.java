@@ -14,7 +14,7 @@ import java.util.List;
 
 public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 {
-	static final String TRANSLATION_STRING = "screen.captcha.gambling.";
+	static final String TRANSLATION_KEY = "screen.captcha.gambling.";
 	static final Identifier BG_TEX = CAPTCHA.texIdentifier("gui/gambling/slotmachine");
 	static final Identifier KNOB_TEX = CAPTCHA.texIdentifier("gui/gambling/knob");
 	static final Identifier LEVER_TEX = CAPTCHA.texIdentifier("gui/gambling/lever");
@@ -29,9 +29,9 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 	List<Coin> coins = new ArrayList<>(), remove = new ArrayList<>();
 	List<ButtonWidget> buttons = new ArrayList<>();
 	
-	protected GamblingCaptchaScreen(float difficulty)
+	protected GamblingCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_STRING + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		targetBalance = 300 + (int)((difficulty - 1) * 25) + random.nextInt((int)(difficulty * 66));
 	}
 	
@@ -279,7 +279,7 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 	@Override
 	String getTranslationKey()
 	{
-		return TRANSLATION_STRING;
+		return TRANSLATION_KEY;
 	}
 	
 	static class Coin

@@ -18,9 +18,9 @@ public class WonkyTextCaptchaScreen extends AbstractCaptchaScreen
 	final String solution;
 	InputFieldWidget field;
 	
-	protected WonkyTextCaptchaScreen(float difficulty)
+	protected WonkyTextCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		StringBuilder sb = new StringBuilder();
 		letters = new String[7];
 		offset = new Vector2i[7];

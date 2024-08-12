@@ -22,9 +22,9 @@ public class MultiBoxCaptchaScreen extends AbstractCaptchaScreen
 	final Box[][] boxes;
 	protected List<ButtonWidget> boxButtons = new ArrayList<>();
 	
-	protected MultiBoxCaptchaScreen(float difficulty)
+	protected MultiBoxCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		pool = MultiBoxCaptchaPoolManager.getRandom(difficulty);
 		boolean canFinish = false, finished = false;
 		while(!finished)

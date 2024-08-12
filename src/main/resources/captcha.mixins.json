@@ -3,7 +3,9 @@
 	"package": "absolutelyaya.captcha.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-
+		"MixinItemStack",
+		"MixinLootableContainerBlockEntity",
+		"MixinPlayerManager"
 	],
 	"injectors": {
 		"defaultRequire": 1

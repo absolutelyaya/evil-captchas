@@ -18,9 +18,9 @@ public class SingleBoxCaptchaScreen extends AbstractCaptchaScreen
 	final String prompt;
 	protected List<ButtonWidget> boxButtons = new ArrayList<>();
 	
-	protected SingleBoxCaptchaScreen(float difficulty)
+	protected SingleBoxCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		data = SingleBoxCaptchaDataManager.getRandom(difficulty);
 		selection = new boolean[data.subdivisions()][data.subdivisions()];
 		prompt = data.prompts().get(random.nextInt(data.prompts().size()));

@@ -14,9 +14,9 @@ public class RorschachCaptchaScreen extends AbstractCaptchaScreen
 	final List<Splodge> splodges = new ArrayList<>();
 	int instruction;
 	
-	protected RorschachCaptchaScreen(float difficulty)
+	protected RorschachCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		for (int i = 0; i < 16 + random.nextInt(32); i++)
 			splodges.add(new Splodge(random.nextInt(getContainerHalfSize()), (int)(random.nextFloat() * getContainerHalfSize() * 2), random.nextBetween(3, 16)));
 		instruction = random.nextInt(3) + (random.nextFloat() < 0.1 && difficulty > 25f ? 1 : 0);

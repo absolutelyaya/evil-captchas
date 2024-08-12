@@ -22,9 +22,9 @@ public class ComprehensionTestCaptchaScreen extends AbstractCaptchaScreen
 	protected final List<ObjectInstance> objects = new ArrayList<>();
 	protected Pair<ComprehensionAdjectiveData, ComprehensionObjectData> prompt;
 	
-	protected ComprehensionTestCaptchaScreen(float difficulty)
+	protected ComprehensionTestCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		for (int i = 0; i < 7; i++)
 		{
 			ObjectInstance object = new ObjectInstance(

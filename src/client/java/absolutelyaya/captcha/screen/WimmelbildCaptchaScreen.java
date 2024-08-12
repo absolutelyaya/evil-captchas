@@ -6,9 +6,9 @@ public class WimmelbildCaptchaScreen extends ImageSearchCaptchaScreen
 {
 	static final String TRANSLATION_KEY = "screen.captcha.wimmelbild.";
 	
-	protected WimmelbildCaptchaScreen(float difficulty)
+	protected WimmelbildCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty);
+		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 	}
 	
 	@Override
