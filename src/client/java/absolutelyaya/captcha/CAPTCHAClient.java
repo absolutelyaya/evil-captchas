@@ -74,4 +74,13 @@ public class CAPTCHAClient implements ClientModInitializer
 			CAPTCHA.LOGGER.error("Failed to open captcha! There's already an open captcha.");
 		validationTimer = 2400 + client.world.random.nextInt(2400); //120s + (up to 120s)
 	}
+	
+	public static void openSpecificCaptcha(String type, String reason, float difficulty)
+	{
+		MinecraftClient client = MinecraftClient.getInstance();
+		if(client.world != null)
+			AbstractCaptchaScreen.openSpecificCaptcha(client, type, difficulty, reason);
+		else
+			CAPTCHA.LOGGER.error("Failed to open captcha! Client must be in a world.");
+	}
 }

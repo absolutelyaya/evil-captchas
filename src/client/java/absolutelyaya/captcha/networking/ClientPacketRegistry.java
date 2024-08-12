@@ -7,8 +7,11 @@ public class ClientPacketRegistry
 {
 	public static void register()
 	{
-		ClientPlayNetworking.registerGlobalReceiver(OpenCaptchaPayload.ID, (payload, context) -> {
+		ClientPlayNetworking.registerGlobalReceiver(OpenRandomCaptchaPayload.ID, (payload, context) -> {
 			CAPTCHAClient.openRandomCaptcha(payload.reason());
+		});
+		ClientPlayNetworking.registerGlobalReceiver(OpenSpecificCaptchaPayload.ID, (payload, context) -> {
+			CAPTCHAClient.openSpecificCaptcha(payload.type(), payload.reason(), payload.difficulty());
 		});
 	}
 }

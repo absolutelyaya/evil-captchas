@@ -6,6 +6,7 @@ public class PacketRegistry
 {
 	public static void register()
 	{
-		PayloadTypeRegistry.playS2C().register(OpenCaptchaPayload.ID, OpenCaptchaPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(OpenRandomCaptchaPayload.ID, OpenRandomCaptchaPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(OpenSpecificCaptchaPayload.ID, OpenSpecificCaptchaPayload.CODEC);
 	}
 }

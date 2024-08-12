@@ -1,5 +1,6 @@
 package absolutelyaya.captcha.screen;
 
+import absolutelyaya.captcha.CAPTCHA;
 import absolutelyaya.captcha.registry.SoundRegistry;
 import absolutelyaya.captcha.screen.widget.InputFieldWidget;
 import net.minecraft.client.MinecraftClient;
@@ -14,13 +15,15 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.random.Random;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public abstract class AbstractCaptchaScreen extends Screen
 {
-	static final List<Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> screens = new ArrayList<>();
+	static final Map<String, Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> screens = new HashMap<>();
 	protected static final Random random = Random.create();
 	protected final String reason;
 	private boolean success;
@@ -151,16 +154,41 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty, String reason)
 	{
-		List<BiFunction<Float, String, AbstractCaptchaScreen>> candidates = new ArrayList<>();
-		for (Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>> i : screens)
+		List<Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> candidates = new ArrayList<>();
+		for (Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>> i : screens.values())
 			if(difficulty >= i.getLeft())
-				candidates.add(i.getRight());
+				candidates.add(i);
 		for (int i = 0; i < 3; i++)
 		{
 			try
 			{
 				AbstractCaptchaScreen captcha;
-				captcha = candidates.get(random.nextInt(candidates.size())).apply(difficulty, reason);
+				Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>> pair = candidates.get(random.nextInt(candidates.size()));
+				captcha = pair.getRight().apply(difficulty - pair.getLeft(), reason);
+				client.setScreen(captcha);
+				break;
+			}
+			catch (Exception ignored)
+			{
+			
+			}
+		}
+	}
+	
+	public static void openSpecificCaptcha(MinecraftClient client, String type, float difficulty, String reason)
+	{
+		if(!screens.containsKey(type))
+		{
+			CAPTCHA.LOGGER.error("captcha type '{}' doesn't exist", type);
+			return;
+		}
+		for (int i = 0; i < 3; i++)
+		{
+			try
+			{
+				AbstractCaptchaScreen captcha;
+				Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>> pair = screens.get(type);
+				captcha = pair.getRight().apply(difficulty - pair.getLeft(), reason);
 				client.setScreen(captcha);
 				break;
 			}
@@ -201,19 +229,19 @@ public abstract class AbstractCaptchaScreen extends Screen
 	}
 	
 	static {
-		screens.add(new Pair<>(0, SingleBoxCaptchaScreen::new));
-		screens.add(new Pair<>(0, MultiBoxCaptchaScreen::new));
-		screens.add(new Pair<>(0, WonkyTextCaptchaScreen::new));
-		screens.add(new Pair<>(3, (i, r) -> new PuzzleSlideCaptchaScreen(Math.max(i - 3, 1), r)));
-		screens.add(new Pair<>(5, (i, r) -> new ComprehensionTestCaptchaScreen(Math.max(i - 5, 1), r)));
-		screens.add(new Pair<>(5, (i, r) -> new ImageSearchCaptchaScreen(Math.max(i - 5, 1), r)));
-		screens.add(new Pair<>(5, (i, r) -> new MathCaptchaScreen(Math.max(i - 5, 1), r)));
-		screens.add(new Pair<>(10, (i, r) -> new RorschachCaptchaScreen(Math.max(i - 10, 1), r)));
-		screens.add(new Pair<>(10, (i, r) -> new WimmelbildCaptchaScreen(Math.max(i - 10, 1), r)));
-		screens.add(new Pair<>(15, (i, r) -> new WizardCaptchaScreen(Math.max(i - 15, 1), r)));
-		screens.add(new Pair<>(15, (i, r) -> new AmongusCaptchaScreen(Math.max(i - 15, 1), r)));
-		screens.add(new Pair<>(20, (i, r) -> new AdvancedComprehensionTestCaptchaScreen(Math.max(i - 20, 1), r)));
-		screens.add(new Pair<>(20, (i, r) -> new GamblingCaptchaScreen(Math.max(i - 20, 1), r)));
-		screens.add(new Pair<>(20, (i, r) -> new ButterflyCaptchaScreen(Math.max(i - 20, 1), r)));
+		screens.put("single-boxes", new Pair<>(0, SingleBoxCaptchaScreen::new));
+		screens.put("multi-boxes", new Pair<>(0, MultiBoxCaptchaScreen::new));
+		screens.put("wonky-text", new Pair<>(0, WonkyTextCaptchaScreen::new));
+		screens.put("puzzle-slide", new Pair<>(3, (i, r) -> new PuzzleSlideCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("simple-comprehension", new Pair<>(5, (i, r) -> new ComprehensionTestCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("image-search", new Pair<>(5, (i, r) -> new ImageSearchCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("math", new Pair<>(5, (i, r) -> new MathCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("rorschach", new Pair<>(10, (i, r) -> new RorschachCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("wimmelbild", new Pair<>(10, (i, r) -> new WimmelbildCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("wizard", new Pair<>(15, (i, r) -> new WizardCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("amongus", new Pair<>(15, (i, r) -> new AmongusCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("advanced-comprehension", new Pair<>(20, (i, r) -> new AdvancedComprehensionTestCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("gambling", new Pair<>(20, (i, r) -> new GamblingCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("butterflies", new Pair<>(20, (i, r) -> new ButterflyCaptchaScreen(Math.max(i, 1), r)));
 	}
 }

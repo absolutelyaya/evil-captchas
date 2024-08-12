@@ -1,6 +1,6 @@
 package absolutelyaya.captcha.mixin;
 
-import absolutelyaya.captcha.networking.OpenCaptchaPayload;
+import absolutelyaya.captcha.networking.OpenRandomCaptchaPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.PlayerManager;
@@ -16,6 +16,6 @@ public class MixinPlayerManager
 	@Inject(method = "respawnPlayer", at = @At("TAIL"))
 	void afterRespawnPlayer(ServerPlayerEntity player, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayerEntity> cir)
 	{
-		ServerPlayNetworking.send(player, new OpenCaptchaPayload("generic"));
+		ServerPlayNetworking.send(player, new OpenRandomCaptchaPayload("generic"));
 	}
 }
