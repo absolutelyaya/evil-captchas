@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public abstract class AbstractCaptchaScreen extends Screen
 {
@@ -89,7 +88,8 @@ public abstract class AbstractCaptchaScreen extends Screen
 		matrices.push();
 		matrices.translate(0, 19f, 0);
 		context.drawCenteredTextWithShadow(textRenderer,
-				Text.translatable("screen.captcha.generic.instruction", Text.translatable("captcha.reason." + reason)), 0, 0, 0xffffff);
+				Text.translatable("screen.captcha.generic.instruction", Text.translatable("captcha.reason." + reason).getString()),
+				0, 0, 0xffffff);
 		matrices.pop();
 		matrices.translate(0f, height / 2f - 16f, 0);
 		drawContainer(context, matrices);

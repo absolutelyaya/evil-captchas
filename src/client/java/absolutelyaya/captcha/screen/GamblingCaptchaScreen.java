@@ -4,6 +4,8 @@ import absolutelyaya.captcha.CAPTCHA;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -20,10 +22,12 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 	static final Identifier LEVER_TEX = CAPTCHA.texIdentifier("gui/gambling/lever");
 	static final Identifier COIN_TEX = CAPTCHA.texIdentifier("gui/gambling/coin");
 	static final Identifier[] SYMBOLS = new Identifier[] {CAPTCHA.texIdentifier("gui/gambling/frown"), CAPTCHA.texIdentifier("gui/gambling/hat"), CAPTCHA.texIdentifier("gui/gambling/ruby"), CAPTCHA.texIdentifier("gui/gambling/seven")};
+	static final SoundEvent[] RESULT_SOUNDS = new SoundEvent[] {SoundEvents.ENTITY_VILLAGER_NO, SoundEvents.ENTITY_VILLAGER_YES, SoundEvents.BLOCK_AMETHYST_BLOCK_RESONATE, SoundEvents.ENTITY_GENERIC_EXPLODE.value()};
 	static final int leverX = 114, leverY = 21;
 	boolean dragging, completed, outcomePending;
 	float leverOffset, spinning, lastSpinning, time, coinTimer;
 	int[] outcome = new int[3];
+	boolean[] sound = new boolean[3];
 	int realBalance = 200, realBet = 10, scheduledCoins, targetBalance, pulls;
 	float displayBalance, displayBet;
 	List<Coin> coins = new ArrayList<>(), remove = new ArrayList<>();
@@ -33,6 +37,7 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 	{
 		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		targetBalance = 300 + (int)((difficulty - 1) * 25) + random.nextInt((int)(difficulty * 66));
+		sound[0] = sound[1] = sound[2] = false;
 	}
 	
 	@Override
@@ -71,6 +76,8 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 			coins.add(new Coin(new Vector2f(random.nextInt(65), -32), new Vector2f((random.nextFloat() - 0.5f) * 0.2f, 1 + random.nextFloat() * 0.5f)));
 			scheduledCoins--;
 			coinTimer = 1f / Math.max(scheduledCoins / 5f, 1f);
+			if(client != null && client.player != null)
+				client.player.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.05f, 0.85f + random.nextFloat() * 0.3f);
 		}
 		if(!coins.isEmpty())
 		{
@@ -112,6 +119,8 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 				};
 				realBalance += win;
 				scheduledCoins += (int)Math.ceil(win / 5f);
+				if(client != null && client.player != null)
+					client.player.playSound(RESULT_SOUNDS[outcome[0] % RESULT_SOUNDS.length], 1f, 1f);
 			}
 			outcomePending = false;
 		}
@@ -158,6 +167,12 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 			{
 				float offset = Math.max((spinning - (3 - i) * 0.33f) % 0.33f, 0f) * 128;
 				context.drawTexture(SYMBOLS[outcome[i - 1] % SYMBOLS.length], 0, (int)-offset, 0, 0, 24, 24, 24, 24);
+				if(offset < 0.5f && !sound[i - 1])
+				{
+					if(client != null && client.player != null)
+						client.player.playSound(SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON, 1f, 1f);
+					sound[i - 1] = true;
+				}
 			}
 			matrices.pop();
 		}
@@ -189,6 +204,8 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 		int pieceX = width / 2 - getContainerHalfSize() + leverX + (int)leverOffset, pieceY = height / 2 - getContainerHalfSize() + leverY;
 		if((mouseX > pieceX && mouseX < pieceX + 16 && mouseY > pieceY && mouseY < pieceY + 16) || dragging)
 		{
+			if(!dragging && client != null && client.player != null)
+					client.player.playSound(SoundEvents.ITEM_CROSSBOW_LOADING_START.value(), 1f, 0.5f);
 			dragging = true;
 			if(deltaY > 0f)
 				leverOffset = MathHelper.clamp(leverOffset + (float)deltaY, 0, 53);
@@ -196,6 +213,9 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 			{
 				spinning = 0.99f;
 				realBalance -= realBet;
+				sound[0] = sound[1] = sound[2] = false;
+				if(client != null && client.player != null)
+					client.player.playSound(SoundEvents.ITEM_CROSSBOW_LOADING_END.value(), 1f, 1f);
 				pulls++;
 			}
 		}
