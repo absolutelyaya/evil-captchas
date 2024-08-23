@@ -1,7 +1,6 @@
 package absolutelyaya.captcha.mixin;
 
-import absolutelyaya.captcha.networking.OpenRandomCaptchaPayload;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import absolutelyaya.captcha.CAPTCHA;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,7 +26,7 @@ public abstract class MixinLootableContainerBlockEntity implements LootableInven
 	{
 		if(!playerEntity.isSpectator() && lootTable != null && playerEntity instanceof ServerPlayerEntity player)
 		{
-			ServerPlayNetworking.send(player, new OpenRandomCaptchaPayload("chest"));
+			CAPTCHA.openRandomCaptcha(player, "chest");
 			generateLoot(player);
 			cir.setReturnValue(null);
 		}

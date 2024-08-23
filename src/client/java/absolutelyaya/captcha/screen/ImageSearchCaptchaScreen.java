@@ -42,7 +42,7 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 					break;
 			}
 			size = 16 + random.nextInt(16);
-			elements.add(new Element(random.nextBetween(0, getContainerHalfSize() * 2 - size / 2), random.nextBetween(0, getContainerHalfSize() * 2 - size / 2), id,
+			elements.add(new Element(random.nextBetween(0, getContainerHalfSize() * 2) - size / 2, random.nextBetween(0, getContainerHalfSize() * 2) - size / 2, id,
 					Math.max(random.nextInt(32), size)));
 		}
 		if(!pool.backgrounds().isEmpty())

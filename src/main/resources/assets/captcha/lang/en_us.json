@@ -84,5 +84,14 @@
   "captcha.reason.generic-verify": "verify your humanity",
   "captcha.reason.chest": "open this Chest",
   "captcha.reason.mine": "verify a Human mined this Ore",
-  "captcha.reason.craft": "verify a Human crafted this Item"
+  "captcha.reason.craft": "verify a Human crafted this Item",
+
+  "captcha.command.force": "Triggered a '%s' CAPTCHA for %s",
+  "captcha.command.config.set": "Set Config '%s' to %s",
+  "captcha.command.config.check": "Config '%s' is currently set to %s",
+  "captcha.command.config.check.nothing": "nothing because it doesn't exist",
+
+  "death.attack.skill_issue": "%1$s had a fatal Skill Issue",
+  "death.attack.skill_issue.item": "%1$s had a fatal Skill Issue",
+  "death.attack.skill_issue.player": "%1$s had a fatal Skill Issue"
 }

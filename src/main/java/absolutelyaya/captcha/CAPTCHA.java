@@ -1,11 +1,16 @@
 package absolutelyaya.captcha;
 
+import absolutelyaya.captcha.component.CaptchaComponents;
+import absolutelyaya.captcha.networking.OpenRandomCaptchaPayload;
 import absolutelyaya.captcha.networking.PacketRegistry;
 import absolutelyaya.captcha.registry.Commands;
+import absolutelyaya.captcha.registry.DamageTypes;
 import absolutelyaya.captcha.registry.SoundRegistry;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +25,7 @@ public class CAPTCHA implements ModInitializer
 	{
 		SoundRegistry.register();
 		PacketRegistry.register();
+		DamageTypes.register();
 		
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			Commands.register(dispatcher);
@@ -39,5 +45,11 @@ public class CAPTCHA implements ModInitializer
 		if(segments.length == 2)
 			return Identifier.of(segments[0], "textures/" + segments[1] + ".png");
 		return Identifier.of(MOD_ID, "textures/" + path + ".png");
+	}
+	
+	public static void openRandomCaptcha(ServerPlayerEntity player, String reason)
+	{
+		ServerPlayNetworking.send(player, new OpenRandomCaptchaPayload(reason));
+		CaptchaComponents.PLAYER.get(player).startCaptcha();
 	}
 }

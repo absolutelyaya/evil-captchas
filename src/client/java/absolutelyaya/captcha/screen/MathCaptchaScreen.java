@@ -158,6 +158,7 @@ public class MathCaptchaScreen extends AbstractCaptchaScreen
 			}
 			else
 				onFail();
+			return;
 		}
 		catch (Exception ignore) {}
 		onFail();

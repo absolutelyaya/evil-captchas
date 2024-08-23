@@ -1,8 +1,13 @@
 package absolutelyaya.captcha.screen;
 
 import absolutelyaya.captcha.CAPTCHA;
+import absolutelyaya.captcha.component.CaptchaComponents;
+import absolutelyaya.captcha.component.IConfigComponent;
+import absolutelyaya.captcha.component.IPlayerComponent;
+import absolutelyaya.captcha.networking.CaptchaResultPayload;
 import absolutelyaya.captcha.registry.SoundRegistry;
 import absolutelyaya.captcha.screen.widget.InputFieldWidget;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -11,6 +16,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.random.Random;
 
@@ -22,9 +28,13 @@ import java.util.function.BiFunction;
 
 public abstract class AbstractCaptchaScreen extends Screen
 {
+	static final Identifier HEARTS_TEX = CAPTCHA.texIdentifier("gui/hearts");
 	static final Map<String, Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> screens = new HashMap<>();
+	static final List<String> easy = List.of("wizard", "butterflies", "puzzle-slide", "rorschach");
 	protected static final Random random = Random.create();
 	protected final String reason;
+	protected IConfigComponent config;
+	protected IPlayerComponent playerData;
 	private boolean success;
 	protected int nextDelay = -1;
 	protected final float difficulty;
@@ -42,8 +52,12 @@ public abstract class AbstractCaptchaScreen extends Screen
 	{
 		super.init();
 		if(isHasProceedButton())
-			addDrawableChild(proceedButton = new ButtonWidget.Builder(Text.translatable("screen.captcha.generic.proceed"), button -> onClickedProceed())
-									 .dimensions(width / 2 - 50, height / 2 + getContainerHalfSize() + 8, 100, 20).build());
+			addDrawableChild(proceedButton = new ButtonWidget.Builder(Text.translatable("screen.captcha.generic.proceed"), button -> {
+				if(isAllowInput())
+					onClickedProceed();
+			}).dimensions(width / 2 - 50, height / 2 + getContainerHalfSize() + 8, 100, 20).build());
+		config = CaptchaComponents.CONFIG.get(client.world.getScoreboard());
+		playerData = CaptchaComponents.PLAYER.get(client.player);
 	}
 	
 	protected void addInputField(InputFieldWidget field)
@@ -100,9 +114,30 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	public void drawContainer(DrawContext context, MatrixStack matrices)
 	{
+		if(config.isLethal())
+			drawHealth(context, matrices);
+		
 		int boxSize = getContainerHalfSize();
 		context.fill(-boxSize - 2, -boxSize - 2, boxSize + 2, boxSize + 2, 0x88000000);
 		context.drawBorder(-boxSize - 1, -boxSize - 1, boxSize * 2 + 2, boxSize * 2 + 2, 0xffffffff);
+	}
+	
+	public void drawHealth(DrawContext context, MatrixStack matrices)
+	{
+		matrices.push();
+		int maxLives = config.getLives(), lives = playerData.getCurLives();
+		matrices.translate(-maxLives * 22f / 2f, -32 - getContainerHalfSize(), 0);
+		matrices.scale(2, 2, 2);
+		for (int i = 0; i < maxLives; i++)
+		{
+			boolean b = i < lives;
+			matrices.push();
+			if(!isAllowInput() && !success)
+				matrices.translate(random.nextFloat() * 1, random.nextFloat() * 1, random.nextFloat() * 1);
+			context.drawTexture(HEARTS_TEX, i * 11, 0, b ? 0 : 11, config.isExplosive() ? 10 : 0, 11, 10, 22, 20);
+			matrices.pop();
+		}
+		matrices.pop();
 	}
 	
 	public void drawInstructions(DrawContext context, MatrixStack matrices)
@@ -129,6 +164,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 		nextDelay = 20;
 		if(client != null && client.player != null)
 			client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f, 1f);
+		ClientPlayNetworking.send(new CaptchaResultPayload(true));
 	}
 	
 	protected void onFail()
@@ -137,6 +173,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 		nextDelay = 30;
 		if(client != null && client.player != null)
 			client.player.playSound(SoundRegistry.WRONG_BUZZER, 1f, 1f);
+		ClientPlayNetworking.send(new CaptchaResultPayload(false));
 	}
 	
 	protected void onClickedProceed()
@@ -154,10 +191,11 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty, String reason)
 	{
+		IConfigComponent config = CaptchaComponents.CONFIG.get(client.world.getScoreboard());
 		List<Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> candidates = new ArrayList<>();
-		for (Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>> i : screens.values())
-			if(difficulty >= i.getLeft())
-				candidates.add(i);
+		for (Map.Entry<String, Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> i : screens.entrySet())
+			if(difficulty >= i.getValue().getLeft() && !(config.isNotEasy() && easy.contains(i.getKey())))
+				candidates.add(i.getValue());
 		for (int i = 0; i < 3; i++)
 		{
 			try

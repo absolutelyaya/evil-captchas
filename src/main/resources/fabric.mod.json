@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"absolutelyaya.captcha.CAPTCHAClient"
+		],
+		"cardinal-components": [
+			"absolutelyaya.captcha.component.CaptchaComponents"
 		]
 	},
 	"mixins": [
@@ -36,5 +39,11 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
+	},
+	"custom": {
+		"cardinal-components": [
+			"captcha:config",
+			"captcha:player"
+		]
 	}
 }
