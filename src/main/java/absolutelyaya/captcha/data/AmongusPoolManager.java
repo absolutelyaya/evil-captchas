@@ -5,14 +5,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.profiler.DummyProfiler;
 import net.minecraft.util.profiler.Profiler;
@@ -50,15 +49,7 @@ public class AmongusPoolManager extends JsonDataLoader
 	protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler)
 	{
 		ImmutableMap.Builder<Identifier, AmongusPool> builder = new ImmutableMap.Builder<>();
-		prepared.forEach((id, element) -> {
-			JsonObject json = element.getAsJsonObject();
-			float difficulty = JsonHelper.getFloat(json, "difficulty");
-			List<Identifier> crewmates = new ArrayList<>();
-			JsonHelper.getArray(json, "crewmates").forEach(i -> crewmates.add(CAPTCHA.texIdentifier(i.getAsString())));
-			List<Identifier> impostors = new ArrayList<>();
-			JsonHelper.getArray(json, "impostors").forEach(i -> impostors.add(CAPTCHA.texIdentifier(i.getAsString())));
-			builder.put(id, new AmongusPool(difficulty, crewmates, impostors));
-		});
+		prepared.forEach((id, element) -> builder.put(id, AmongusPool.deserialize(element.getAsJsonObject())));
 		ALL_POOLS = builder.build();
 	}
 	
@@ -69,5 +60,20 @@ public class AmongusPoolManager extends JsonDataLoader
 			if(difficulty >= pool.difficulty())
 				candidates.add(pool);
 		return candidates.get(random.nextInt(candidates.size()));
+	}
+	
+	public static NbtCompound compileToSyncData()
+	{
+		NbtCompound nbt = new NbtCompound();
+		for (Map.Entry<Identifier, AmongusPool> entry : ALL_POOLS.entrySet())
+			nbt.put(entry.getKey().toString(), entry.getValue().serialize());
+		return nbt;
+	}
+	
+	public static void applySyncData(NbtCompound nbt)
+	{
+		ImmutableMap.Builder<Identifier, AmongusPool> builder = new ImmutableMap.Builder<>();
+		nbt.getKeys().forEach(key -> builder.put(Identifier.tryParse(key), AmongusPool.deserialize(nbt.getCompound(key))));
+		ALL_POOLS = builder.build();
 	}
 }

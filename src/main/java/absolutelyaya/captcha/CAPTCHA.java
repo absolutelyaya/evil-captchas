@@ -1,6 +1,8 @@
 package absolutelyaya.captcha;
 
 import absolutelyaya.captcha.component.CaptchaComponents;
+import absolutelyaya.captcha.data.AmongusPoolManager;
+import absolutelyaya.captcha.networking.CaptchaDataSyncPayload;
 import absolutelyaya.captcha.networking.OpenRandomCaptchaPayload;
 import absolutelyaya.captcha.networking.PacketRegistry;
 import absolutelyaya.captcha.registry.Commands;
@@ -9,7 +11,9 @@ import absolutelyaya.captcha.registry.SoundRegistry;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -27,9 +31,9 @@ public class CAPTCHA implements ModInitializer
 		PacketRegistry.register();
 		DamageTypes.register();
 		
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			Commands.register(dispatcher);
-		});
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> Commands.register(dispatcher));
+		
+		ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, b) -> sendCaptchaData(player));
 	}
 	
 	public static Identifier identifier(String path)
@@ -51,5 +55,14 @@ public class CAPTCHA implements ModInitializer
 	{
 		ServerPlayNetworking.send(player, new OpenRandomCaptchaPayload(reason));
 		CaptchaComponents.PLAYER.get(player).startCaptcha();
+	}
+	
+	public static void sendCaptchaData(ServerPlayerEntity player)
+	{
+		NbtCompound data = new NbtCompound();
+		
+		data.put("amongus", AmongusPoolManager.compileToSyncData());
+		
+		ServerPlayNetworking.send(player, new CaptchaDataSyncPayload(data));
 	}
 }
