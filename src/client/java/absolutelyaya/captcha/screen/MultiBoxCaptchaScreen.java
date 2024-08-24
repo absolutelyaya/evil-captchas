@@ -187,7 +187,7 @@ public class MultiBoxCaptchaScreen extends AbstractCaptchaScreen
 	@Override
 	protected Text getInstructionText(int i, String prefix)
 	{
-		return Text.translatable(prefix, Text.translatable(pool.promptKey()));
+		return Text.translatable(prefix, Text.translatable(pool.prompt()));
 	}
 	
 	@Override

@@ -8,6 +8,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -60,5 +64,30 @@ public class PuzzleSlideDataManager extends JsonDataLoader
 	public static Identifier getRandomTexture()
 	{
 		return TEXTURES.get(random.nextInt(TEXTURES.size()));
+	}
+	
+	public static NbtCompound compileToSyncData()
+	{
+		NbtCompound nbt = new NbtCompound();
+		NbtList list = new NbtList();
+		for (Identifier id : TEXTURES)
+			list.add(NbtString.of(id.toString()));
+		nbt.put("textures", list);
+		return nbt;
+	}
+	
+	public static void applySyncData(NbtCompound nbt)
+	{
+		ImmutableList.Builder<Identifier> builder = new ImmutableList.Builder<>();
+		nbt.getList("textures", NbtElement.STRING_TYPE).forEach(i -> {
+			if(i instanceof NbtString string)
+			{
+				Identifier id = Identifier.tryParse(string.asString());
+				if(id != null)
+					builder.add(id);
+			}
+		});
+		TEXTURES = builder.build();
+		CAPTCHA.LOGGER.info("received {} puzzle slide texture paths", TEXTURES.size());
 	}
 }

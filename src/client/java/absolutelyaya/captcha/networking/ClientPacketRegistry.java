@@ -1,7 +1,7 @@
 package absolutelyaya.captcha.networking;
 
 import absolutelyaya.captcha.CAPTCHAClient;
-import absolutelyaya.captcha.data.AmongusPoolManager;
+import absolutelyaya.captcha.data.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public class ClientPacketRegistry
@@ -19,7 +19,12 @@ public class ClientPacketRegistry
 			{
 				switch(key)
 				{
-					case "amongus" -> AmongusPoolManager.applySyncData(payload.data());
+					case "amongus" -> AmongusPoolManager.applySyncData(payload.data().getCompound(key));
+					case "comprehension" -> ComprehensionTestManager.applySyncData(payload.data().getCompound(key));
+					case "image-search" -> ImageSearchCaptchaPoolManager.applySyncData(payload.data().getCompound(key));
+					case "multi-box" -> MultiBoxCaptchaPoolManager.applySyncData(payload.data().getCompound(key));
+					case "single-box" -> SingleBoxCaptchaDataManager.applySyncData(payload.data().getCompound(key));
+					case "puzzle" -> PuzzleSlideDataManager.applySyncData(payload.data().getCompound(key));
 				}
 			}
 		});

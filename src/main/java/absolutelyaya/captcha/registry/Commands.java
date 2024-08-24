@@ -83,7 +83,7 @@ public class Commands
 		return Command.SINGLE_SUCCESS;
 	}
 	
-	private static int executeSetConfig(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
+	private static int executeSetConfig(CommandContext<ServerCommandSource> context)
 	{
 		String rule = context.getArgument("rule", String.class);
 		String val = context.getArgument("value", String.class);
@@ -108,7 +108,7 @@ public class Commands
 		return Command.SINGLE_SUCCESS;
 	}
 	
-	private static int executeCheckConfig(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
+	private static int executeCheckConfig(CommandContext<ServerCommandSource> context)
 	{
 		String rule = context.getArgument("rule", String.class);
 		

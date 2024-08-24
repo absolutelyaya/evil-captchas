@@ -5,14 +5,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.profiler.DummyProfiler;
 import net.minecraft.util.profiler.Profiler;
@@ -50,18 +49,7 @@ public class MultiBoxCaptchaPoolManager extends JsonDataLoader
 	protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler)
 	{
 		ImmutableMap.Builder<Identifier, MultiBoxCaptchaPool> builder = new ImmutableMap.Builder<>();
-		prepared.forEach((id, element) -> {
-			JsonObject json = element.getAsJsonObject();
-			String promptKey = JsonHelper.getString(json, "promptKey");
-			float difficulty = JsonHelper.getFloat(json, "difficulty");
-			List<String> textureList = new ArrayList<>();
-			JsonHelper.getArray(json, "values").forEach(i -> {
-				String val = i.getAsString();
-				if(!textureList.contains(val))
-					textureList.add(val);
-			});
-			builder.put(id, new MultiBoxCaptchaPool(promptKey, difficulty, textureList));
-		});
+		prepared.forEach((id, element) -> builder.put(id, MultiBoxCaptchaPool.deserialize(element.getAsJsonObject())));
 		ALL_POOLS = builder.build();
 	}
 	
@@ -74,5 +62,21 @@ public class MultiBoxCaptchaPoolManager extends JsonDataLoader
 			if(difficulty >= pool.difficulty())
 				candidates.add(pool);
 		return candidates.get(random.nextInt(candidates.size()));
+	}
+	
+	public static NbtCompound compileToSyncData()
+	{
+		NbtCompound nbt = new NbtCompound();
+		for (Map.Entry<Identifier, MultiBoxCaptchaPool> entry : ALL_POOLS.entrySet())
+			nbt.put(entry.getKey().toString(), entry.getValue().serialize());
+		return nbt;
+	}
+	
+	public static void applySyncData(NbtCompound nbt)
+	{
+		ImmutableMap.Builder<Identifier, MultiBoxCaptchaPool> builder = new ImmutableMap.Builder<>();
+		nbt.getKeys().forEach(key -> builder.put(Identifier.tryParse(key), MultiBoxCaptchaPool.deserialize(nbt.getCompound(key))));
+		ALL_POOLS = builder.build();
+		CAPTCHA.LOGGER.info("received {} multi-box captcha pools", ALL_POOLS.size());
 	}
 }

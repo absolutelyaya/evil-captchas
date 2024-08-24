@@ -36,12 +36,12 @@ public record AmongusPool(float difficulty, List<Identifier> crewmates, List<Ide
 		nbt.getList("crewmates", NbtElement.STRING_TYPE)
 				.forEach(element -> {
 					if(element instanceof NbtString string)
-						crewmates.add(Identifier.tryParse(string.toString()));
+						crewmates.add(Identifier.tryParse(string.asString()));
 				});
 		nbt.getList("impostors", NbtElement.STRING_TYPE)
 				.forEach(element -> {
 					if(element instanceof NbtString string)
-						impostors.add(Identifier.tryParse(string.toString()));
+						impostors.add(Identifier.tryParse(string.asString()));
 				});
 		return new AmongusPool(difficulty, crewmates, impostors);
 	}

@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -48,23 +49,7 @@ public class SingleBoxCaptchaDataManager extends JsonDataLoader
 	{
 		ImmutableMap.Builder<Identifier, SingleBoxCaptchaData> builder = new ImmutableMap.Builder<>();
 		prepared.forEach((id, element) -> {
-			JsonObject json = element.getAsJsonObject();
-			String texture = JsonHelper.getString(json, "texture");
-			float difficulty = JsonHelper.getFloat(json, "difficulty");
-			int subdivisions = JsonHelper.getInt(json, "subdivisions");
-			List<List<String>> valueList = new ArrayList<>();
-			List<String> promptList = new ArrayList<>();
-			JsonHelper.getArray(json, "values").forEach(i -> {
-				List<String> subList = new ArrayList<>();
-				i.getAsJsonArray().forEach(ii -> {
-					String val = ii.getAsString();
-					if(!promptList.contains(val))
-						promptList.add(val);
-					subList.add(val);
-				});
-				valueList.add(subList);
-			});
-			builder.put(id, new SingleBoxCaptchaData(CAPTCHA.texIdentifier(texture), difficulty, subdivisions, valueList, promptList));
+			builder.put(id, SingleBoxCaptchaData.deserialize(element.getAsJsonObject()));
 		});
 		ALL_BOXES = builder.build();
 	}
@@ -78,5 +63,21 @@ public class SingleBoxCaptchaDataManager extends JsonDataLoader
 			if(difficulty >= box.difficulty())
 				candidates.add(box);
 		return candidates.get(random.nextInt(candidates.size()));
+	}
+	
+	public static NbtCompound compileToSyncData()
+	{
+		NbtCompound nbt = new NbtCompound();
+		for (Map.Entry<Identifier, SingleBoxCaptchaData> entry : ALL_BOXES.entrySet())
+			nbt.put(entry.getKey().toString(), entry.getValue().serialize());
+		return nbt;
+	}
+	
+	public static void applySyncData(NbtCompound nbt)
+	{
+		ImmutableMap.Builder<Identifier, SingleBoxCaptchaData> builder = new ImmutableMap.Builder<>();
+		nbt.getKeys().forEach(key -> builder.put(Identifier.tryParse(key), SingleBoxCaptchaData.deserialize(nbt.getCompound(key))));
+		ALL_BOXES = builder.build();
+		CAPTCHA.LOGGER.info("received {} single-box captcha pools", ALL_BOXES.size());
 	}
 }

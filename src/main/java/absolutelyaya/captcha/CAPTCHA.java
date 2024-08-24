@@ -1,7 +1,7 @@
 package absolutelyaya.captcha;
 
 import absolutelyaya.captcha.component.CaptchaComponents;
-import absolutelyaya.captcha.data.AmongusPoolManager;
+import absolutelyaya.captcha.data.*;
 import absolutelyaya.captcha.networking.CaptchaDataSyncPayload;
 import absolutelyaya.captcha.networking.OpenRandomCaptchaPayload;
 import absolutelyaya.captcha.networking.PacketRegistry;
@@ -62,6 +62,11 @@ public class CAPTCHA implements ModInitializer
 		NbtCompound data = new NbtCompound();
 		
 		data.put("amongus", AmongusPoolManager.compileToSyncData());
+		data.put("comprehension", ComprehensionTestManager.compileToSyncData());
+		data.put("image-search", ImageSearchCaptchaPoolManager.compileToSyncData());
+		data.put("multi-box", MultiBoxCaptchaPoolManager.compileToSyncData());
+		data.put("single-box", SingleBoxCaptchaDataManager.compileToSyncData());
+		data.put("puzzle", PuzzleSlideDataManager.compileToSyncData());
 		
 		ServerPlayNetworking.send(player, new CaptchaDataSyncPayload(data));
 	}

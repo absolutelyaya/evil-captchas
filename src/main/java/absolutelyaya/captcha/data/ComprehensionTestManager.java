@@ -5,16 +5,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.profiler.DummyProfiler;
 import net.minecraft.util.profiler.Profiler;
 
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ public class ComprehensionTestManager extends JsonDataLoader
 			@Override
 			public void reload(ResourceManager manager)
 			{
-				applyObjects(prepare("captcha/comprehension/objects", manager, DummyProfiler.INSTANCE), manager, DummyProfiler.INSTANCE);
+				applyObjects(prepare("captcha/comprehension/objects", manager));
 			}
 		});
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener()
@@ -57,58 +55,32 @@ public class ComprehensionTestManager extends JsonDataLoader
 			@Override
 			public void reload(ResourceManager manager)
 			{
-				applyAdjectives(prepare("captcha/comprehension/adjectives", manager, DummyProfiler.INSTANCE), manager, DummyProfiler.INSTANCE);
+				applyAdjectives(prepare("captcha/comprehension/adjectives", manager));
 			}
 		});
 	}
 	
 	@Override
-	protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler)
-	{
-	}
+	protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {}
 	
-	
-	protected Map<Identifier, JsonElement> prepare(String dataType, ResourceManager resourceManager, Profiler profiler)
+	protected Map<Identifier, JsonElement> prepare(String dataType, ResourceManager resourceManager)
 	{
 		Map<Identifier, JsonElement> prepared = new HashMap<>();
 		load(resourceManager, dataType, GSON, prepared);
 		return prepared;
 	}
 	
-	protected void applyObjects(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler)
+	protected void applyObjects(Map<Identifier, JsonElement> prepared)
 	{
 		ImmutableMap.Builder<Identifier, ComprehensionObjectData> builder = new ImmutableMap.Builder<>();
-		prepared.forEach((id, element) -> {
-			JsonObject json = element.getAsJsonObject();
-			String texture = JsonHelper.getString(json, "texture");
-			String name = JsonHelper.getString(json, "name");
-			float difficulty = JsonHelper.getFloat(json, "difficulty");
-			builder.put(id, new ComprehensionObjectData(texture, name, difficulty));
-		});
+		prepared.forEach((id, element) -> builder.put(id, ComprehensionObjectData.deserialize(element.getAsJsonObject())));
 		ALL_OBJECTS = builder.build();
 	}
 	
-	protected void applyAdjectives(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler)
+	protected void applyAdjectives(Map<Identifier, JsonElement> prepared)
 	{
 		ImmutableMap.Builder<Identifier, ComprehensionAdjectiveData> builder = new ImmutableMap.Builder<>();
-		prepared.forEach((id, element) -> {
-			JsonObject json = element.getAsJsonObject();
-			String name = JsonHelper.getString(json, "name");
-			float difficulty = JsonHelper.getFloat(json, "difficulty");
-			int color = -1;
-			if(json.has("color"))
-				color = JsonHelper.getInt(json, "color");
-			boolean shaking = false;
-			if(json.has("shaking"))
-				shaking = JsonHelper.getBoolean(json, "shaking");
-			float scale = 1f;
-			if(json.has("scale"))
-				scale = JsonHelper.getFloat(json, "scale");
-			int glowColor = -1;
-			if(json.has("glow-color"))
-				glowColor = JsonHelper.getInt(json, "glow-color");
-			builder.put(id, new ComprehensionAdjectiveData(name, difficulty, color, scale, shaking, glowColor));
-		});
+		prepared.forEach((id, element) -> builder.put(id, ComprehensionAdjectiveData.deserialize(element.getAsJsonObject())));
 		ALL_ADJECTIVES = builder.build();
 	}
 	
@@ -146,5 +118,32 @@ public class ComprehensionTestManager extends JsonDataLoader
 			if(adjective.isColor() && difficulty >= adjective.difficulty())
 				candidates.add(adjective);
 		return candidates.get(random.nextInt(candidates.size()));
+	}
+	
+	public static NbtCompound compileToSyncData()
+	{
+		NbtCompound nbt = new NbtCompound();
+		NbtCompound objects = new NbtCompound();
+		for (Map.Entry<Identifier, ComprehensionObjectData> entry : ALL_OBJECTS.entrySet())
+			objects.put(entry.getKey().toString(), entry.getValue().serialize());
+		nbt.put("objects", objects);
+		NbtCompound adjectives = new NbtCompound();
+		for (Map.Entry<Identifier, ComprehensionAdjectiveData> entry : ALL_ADJECTIVES.entrySet())
+			adjectives.put(entry.getKey().toString(), entry.getValue().serialize());
+		nbt.put("adjectives", adjectives);
+		return nbt;
+	}
+	
+	public static void applySyncData(NbtCompound nbt)
+	{
+		ImmutableMap.Builder<Identifier, ComprehensionObjectData> objectBuilder = new ImmutableMap.Builder<>();
+		NbtCompound objects = nbt.getCompound("objects");
+		objects.getKeys().forEach(key -> objectBuilder.put(Identifier.tryParse(key), ComprehensionObjectData.deserialize(objects.getCompound(key))));
+		ALL_OBJECTS = objectBuilder.build();
+		ImmutableMap.Builder<Identifier, ComprehensionAdjectiveData> adjectiveBuilder = new ImmutableMap.Builder<>();
+		NbtCompound adjectives = nbt.getCompound("adjectives");
+		adjectives.getKeys().forEach(key -> adjectiveBuilder.put(Identifier.tryParse(key), ComprehensionAdjectiveData.deserialize(adjectives.getCompound(key))));
+		ALL_ADJECTIVES = adjectiveBuilder.build();
+		CAPTCHA.LOGGER.info("received {} comprehension objects and {} comprehension adjectives", ALL_OBJECTS.size(), ALL_ADJECTIVES.size());
 	}
 }

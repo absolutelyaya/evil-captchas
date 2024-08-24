@@ -75,5 +75,6 @@ public class AmongusPoolManager extends JsonDataLoader
 		ImmutableMap.Builder<Identifier, AmongusPool> builder = new ImmutableMap.Builder<>();
 		nbt.getKeys().forEach(key -> builder.put(Identifier.tryParse(key), AmongusPool.deserialize(nbt.getCompound(key))));
 		ALL_POOLS = builder.build();
+		CAPTCHA.LOGGER.info("received {} amongus captcha pools", ALL_POOLS.size());
 	}
 }
