@@ -23,12 +23,6 @@ public class CAPTCHAClient implements ClientModInitializer
 	@Override
 	public void onInitializeClient()
 	{
-		new SingleBoxCaptchaDataManager();
-		new MultiBoxCaptchaPoolManager();
-		new ImageSearchCaptchaPoolManager();
-		new PuzzleSlideDataManager();
-		new ComprehensionTestManager();
-		new AmongusPoolManager();
 		ClientPacketRegistry.register();
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

@@ -27,6 +27,12 @@ public class CAPTCHA implements ModInitializer
 	@Override
 	public void onInitialize()
 	{
+		new SingleBoxCaptchaDataManager();
+		new MultiBoxCaptchaPoolManager();
+		new ImageSearchCaptchaPoolManager();
+		new PuzzleSlideDataManager();
+		new ComprehensionTestManager();
+		new AmongusPoolManager();
 		SoundRegistry.register();
 		PacketRegistry.register();
 		DamageTypes.register();
