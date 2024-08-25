@@ -5,6 +5,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector2f;
 
@@ -45,10 +46,10 @@ public class ButterflyCaptchaScreen extends AbstractCaptchaScreen
 			return;
 		for (Butterfly bf : butterflies)
 		{
-			bf.pos = bf.pos.add(bf.movement.mul(1f + difficulty / 50f));
-			bf.movement = bf.movement.lerp(bf.targetMovement, Math.min(0.1f + difficulty / 200f, 0.25f)).normalize();
+			bf.pos = bf.pos.add(bf.movement.mul(1f + Math.min(difficulty / 50f, 10f)));
+			bf.movement = bf.movement.lerp(bf.targetMovement, Math.min(0.1f + Math.max(difficulty / 100f - 0.25f, 0f), 0.75f)).normalize();
 			bf.yaw = (float)Math.toDegrees(Math.atan2(bf.movement.y, bf.movement.x)) + 90;
-			if(random.nextFloat() < 0.01f)
+			if(random.nextFloat() < 0.01f + (MathHelper.clamp(difficulty / 100f - 0.25f, 0f, 0.5f)))
 				bf.targetMovement = new Vector2f(random.nextFloat() - 0.5f, random.nextFloat() - 0.5f).normalize();
 			if(bf.pos.x - 4 > getContainerHalfSize() * 2 || bf.pos.x + 4 < 0 ||
 					   bf.pos.y - 4 > getContainerHalfSize() * 2 || bf.pos.y + 4 < 0)
