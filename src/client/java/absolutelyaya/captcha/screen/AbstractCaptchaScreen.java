@@ -30,7 +30,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 {
 	static final Identifier HEARTS_TEX = CAPTCHA.texIdentifier("gui/hearts");
 	static final Map<String, Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> screens = new HashMap<>();
-	static final List<String> easy = List.of("wizard", "butterflies", "puzzle-slide", "rorschach");
+	static final List<String> easy = List.of("butterflies", "puzzle-slide", "rorschach");
 	protected static final Random random = Random.create();
 	protected final String reason;
 	protected IConfigComponent config;
