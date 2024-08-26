@@ -2,14 +2,14 @@
 	"schemaVersion": 1,
 	"id": "captcha",
 	"version": "${version}",
-	"name": "CAPTCHA",
+	"name": "EVIL CAPTCHA",
 	"description": "Don't you love Captchas ?",
 	"authors": [
 		"Absolutelyaya"
 	],
 	"contact": {
 		"homepage": "https://absolutelyaya.neocities.org/",
-		"sources": "soon"
+		"sources": "https://github.com/absolutelyaya/evil-captchas"
 	},
 	"license": "MIT",
 	"icon": "assets/captcha/icon.png",
