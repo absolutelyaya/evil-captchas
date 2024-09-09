@@ -13,7 +13,8 @@ import org.joml.Vector2f;
 public class WizardCaptchaScreen extends AbstractCaptchaScreen
 {
 	static final Identifier[] WIZARD_TEX = new Identifier[] {CAPTCHA.texIdentifier("gui/wizards/wzrd1"), CAPTCHA.texIdentifier("gui/wizards/wzrd2"),
-			CAPTCHA.texIdentifier("gui/wizards/blizard"), CAPTCHA.texIdentifier("gui/wizards/wzrd-step")};
+			CAPTCHA.texIdentifier("gui/wizards/blizard"), CAPTCHA.texIdentifier("gui/wizards/wzrd-step"), CAPTCHA.texIdentifier("gui/wizards/blue"),
+			CAPTCHA.texIdentifier("gui/wizards/nekomancer")};
 	static final String TRANSLATION_KEY = "screen.captcha.wizard.";
 	final Identifier tex;
 	Vector2f pos = new Vector2f(), movement = new Vector2f(), targetMovement = new Vector2f();
