@@ -2,8 +2,8 @@
 	"schemaVersion": 1,
 	"id": "captcha",
 	"version": "${version}",
-	"name": "EVIL CAPTCHA",
-	"description": "Don't you love Captchas ?",
+	"name": "modmenu.nameTranslation.captcha",
+	"description": "modmenu.descriptionTranslation.captcha",
 	"authors": [
 		"Absolutelyaya"
 	],

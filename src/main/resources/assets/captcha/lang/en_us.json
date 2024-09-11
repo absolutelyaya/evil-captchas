@@ -93,5 +93,8 @@
 
   "death.attack.skill_issue": "%1$s had a fatal Skill Issue",
   "death.attack.skill_issue.item": "%1$s had a fatal Skill Issue",
-  "death.attack.skill_issue.player": "%1$s had a fatal Skill Issue"
+  "death.attack.skill_issue.player": "%1$s had a fatal Skill Issue",
+
+  "modmenu.nameTranslation.captcha": "EVIL CAPTCHA",
+  "modmenu.descriptionTranslation.captcha": "Don't you love Captchas ?"
 }
