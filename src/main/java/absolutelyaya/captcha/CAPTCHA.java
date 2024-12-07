@@ -1,6 +1,7 @@
 package absolutelyaya.captcha;
 
 import absolutelyaya.captcha.component.CaptchaComponents;
+import absolutelyaya.captcha.config.ServerConfig;
 import absolutelyaya.captcha.data.*;
 import absolutelyaya.captcha.networking.CaptchaDataSyncPayload;
 import absolutelyaya.captcha.networking.OpenRandomCaptchaPayload;
@@ -23,6 +24,7 @@ public class CAPTCHA implements ModInitializer
 {
 	public static final String MOD_ID = "captcha";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static ServerConfig config;
 
 	@Override
 	public void onInitialize()
@@ -36,6 +38,8 @@ public class CAPTCHA implements ModInitializer
 		SoundRegistry.register();
 		PacketRegistry.register();
 		DamageTypes.register();
+		
+		config = new ServerConfig();
 		
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> Commands.register(dispatcher));
 		

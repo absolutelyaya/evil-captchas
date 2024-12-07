@@ -2,7 +2,6 @@ package absolutelyaya.captcha.screen;
 
 import absolutelyaya.captcha.CAPTCHA;
 import absolutelyaya.captcha.component.CaptchaComponents;
-import absolutelyaya.captcha.component.IConfigComponent;
 import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.networking.CaptchaResultPayload;
 import absolutelyaya.captcha.registry.SoundRegistry;
@@ -26,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import static absolutelyaya.captcha.CAPTCHA.config;
+
 public abstract class AbstractCaptchaScreen extends Screen
 {
 	static final Identifier HEARTS_TEX = CAPTCHA.texIdentifier("gui/hearts");
@@ -33,7 +34,6 @@ public abstract class AbstractCaptchaScreen extends Screen
 	static final List<String> easy = List.of("butterflies", "puzzle-slide", "rorschach");
 	protected static final Random random = Random.create();
 	protected final String reason;
-	protected IConfigComponent config;
 	protected IPlayerComponent playerData;
 	private boolean success;
 	protected int nextDelay = -1;
@@ -56,7 +56,6 @@ public abstract class AbstractCaptchaScreen extends Screen
 				if(isAllowInput())
 					onClickedProceed();
 			}).dimensions(width / 2 - 50, height / 2 + getContainerHalfSize() + 8, 100, 20).build());
-		config = CaptchaComponents.CONFIG.get(client.world.getScoreboard());
 		playerData = CaptchaComponents.PLAYER.get(client.player);
 	}
 	
@@ -114,7 +113,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	public void drawContainer(DrawContext context, MatrixStack matrices)
 	{
-		if(config.isLethal())
+		if(config.lethal.getValue())
 			drawHealth(context, matrices);
 		
 		int boxSize = getContainerHalfSize();
@@ -125,7 +124,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 	public void drawHealth(DrawContext context, MatrixStack matrices)
 	{
 		matrices.push();
-		int maxLives = config.getLives(), lives = playerData.getCurLives();
+		int maxLives = config.lives.getValue(), lives = playerData.getCurLives();
 		matrices.translate(-maxLives * 22f / 2f, -32 - getContainerHalfSize(), 0);
 		matrices.scale(2, 2, 2);
 		for (int i = 0; i < maxLives; i++)
@@ -134,7 +133,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 			matrices.push();
 			if(!isAllowInput() && !success)
 				matrices.translate(random.nextFloat() * 1, random.nextFloat() * 1, random.nextFloat() * 1);
-			context.drawTexture(HEARTS_TEX, i * 11, 0, b ? 0 : 11, config.isExplosive() ? 10 : 0, 11, 10, 22, 20);
+			context.drawTexture(HEARTS_TEX, i * 11, 0, b ? 0 : 11, config.explosive.getValue() ? 10 : 0, 11, 10, 22, 20);
 			matrices.pop();
 		}
 		matrices.pop();
@@ -191,10 +190,9 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	public static void openRandomCaptcha(MinecraftClient client, float difficulty, String reason)
 	{
-		IConfigComponent config = CaptchaComponents.CONFIG.get(client.world.getScoreboard());
 		List<Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> candidates = new ArrayList<>();
 		for (Map.Entry<String, Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> i : screens.entrySet())
-			if(difficulty >= i.getValue().getLeft() && !(config.isNotEasy() && easy.contains(i.getKey())))
+			if(difficulty >= i.getValue().getLeft() && !(config.notEasy.getValue() && easy.contains(i.getKey())))
 				candidates.add(i.getValue());
 		for (int i = 0; i < 3; i++)
 		{

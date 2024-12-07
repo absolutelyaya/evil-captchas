@@ -7,6 +7,8 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
 
+import static absolutelyaya.captcha.CAPTCHA.config;
+
 public class PlayerComponent implements IPlayerComponent
 {
 	final PlayerEntity provider;
@@ -21,26 +23,24 @@ public class PlayerComponent implements IPlayerComponent
 	@Override
 	public void startCaptcha()
 	{
-		IConfigComponent config = CaptchaComponents.CONFIG.get(provider.getWorld().getScoreboard());
-		if(config.isLethal())
-			lives = config.getLives();
+		if(config.lethal.getValue())
+			lives = config.lives.getValue();
 		CaptchaComponents.PLAYER.sync(provider);
 	}
 	
 	@Override
 	public void finishCaptcha(boolean result)
 	{
-		IConfigComponent config = CaptchaComponents.CONFIG.get(provider.getWorld().getScoreboard());
 		localDifficulty = Math.max(localDifficulty + (result ? 1f : -1f), 0f);
 		
 		if(!result)
 		{
-			if(config.isLethal())
+			if(config.lethal.getValue())
 				lives--;
 			if(lives <= 0)
 			{
 				provider.damage(DamageTypes.get(provider.getWorld(), DamageTypes.SKILL_ISSUE), 420);
-				if(config.isExplosive())
+				if(config.explosive.getValue())
 					provider.getWorld().createExplosion(provider, provider.getX(), provider.getY(), provider.getZ(), 6.9f, World.ExplosionSourceType.MOB);
 			}
 		}

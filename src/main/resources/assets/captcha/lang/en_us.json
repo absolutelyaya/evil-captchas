@@ -96,5 +96,25 @@
   "death.attack.skill_issue.player": "%1$s had a fatal Skill Issue",
 
   "modmenu.nameTranslation.captcha": "EVIL CAPTCHA",
-  "modmenu.descriptionTranslation.captcha": "Don't you love Captchas ?"
+  "modmenu.descriptionTranslation.captcha": "Don't you love Captchas ?",
+
+  "screen.captcha.config.title": "Evil CAPTCHA Server Config",
+  "config.captcha.lethal": "Lethal",
+  "config.captcha.lethal.description": "Players die when failing a captcha a certain amount of times",
+  "config.captcha.lives": "Lives",
+  "config.captcha.lives.description": "[If Lethal is enabled] The amount of tries Players have to solve a captcha before getting killed",
+  "config.captcha.explosive": "Explosive",
+  "config.captcha.explosive.description": "[If Lethal is enabled] Players explode violently when dying from captchas (WARNING!! DESTRUCTIVE!)",
+  "config.captcha.validation_expiration": "Validation Expiration",
+  "config.captcha.validation_expiration.description": "Whether captchas should appear based on a semi-random timer",
+  "config.captcha.expiration_delay_min": "Expiration delay MIN",
+  "config.captcha.expiration_delay_min.description": "[If expiration is enabled] The Minimum amount of ticks until a player will be forced to do another captcha",
+  "config.captcha.expiration_delay_max": "Expiration delay MAX",
+  "config.captcha.expiration_delay_max.description": "[If expiration is enabled] The Maximum amount of ticks until a player will be forced to do another captcha",
+  "config.captcha.not_easy": "Not Easy",
+  "config.captcha.not_easy.description": "Prevents \"easy\" captchas (or un-failable ones) from showing up",
+  "config.captcha.constant_increase_rate": "Constant Difficulty++ Value",
+  "config.captcha.constant_increase_rate.description": "The amount by which the global difficulty should be increased every Constant Difficulty++ Interval",
+  "config.captcha.constant_increase_interval": "Constant Difficulty++ Interval",
+  "config.captcha.constant_increase_interval.description": "The Interval (in Ticks) of the global difficulty being increased by the Constant Difficulty++ Value"
 }

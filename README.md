@@ -89,7 +89,7 @@ There is Global and Local Difficulty; The Global Difficulty is shared between al
     - The random Range of Seconds before a new random Captcha is triggered
     - To better explain it, the delay before a new captcha is triggered is calculated by `min + random(range)`
     - Doesn't have any effect if `Validation Expiration` is disabled
-- Constant Increase Rate (default: 0.002)
+- Constant Increase Rate (default: 0.0005)
     - The Global Difficulty is increased by this amount every Second. I wouldn't recommend setting much higher numbers than the default, stuff escalates VERY quickly
     - If you don't want the difficulty ot increase over time, set this to 0
         - Passing Captchas will still increase the local difficulty

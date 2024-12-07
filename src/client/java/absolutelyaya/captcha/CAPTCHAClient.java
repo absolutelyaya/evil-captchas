@@ -2,7 +2,6 @@ package absolutelyaya.captcha;
 
 import absolutelyaya.captcha.component.CaptchaComponents;
 import absolutelyaya.captcha.component.IConfigComponent;
-import absolutelyaya.captcha.data.*;
 import absolutelyaya.captcha.networking.ClientPacketRegistry;
 import absolutelyaya.captcha.networking.OpenCaptchaC2SPayload;
 import absolutelyaya.captcha.screen.AbstractCaptchaScreen;
@@ -16,6 +15,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.text.Text;
 
+import static absolutelyaya.captcha.CAPTCHA.config;
+
 public class CAPTCHAClient implements ClientModInitializer
 {
 	static int validationTimer;
@@ -28,7 +29,7 @@ public class CAPTCHAClient implements ClientModInitializer
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if(client.player == null)
 				return;
-			if(!CaptchaComponents.CONFIG.get(client.world.getScoreboard()).isValidationExpiration())
+			if(!config.validationExpiration.getValue())
 				return;
 			if(validationTimer > 0 && (client.currentScreen == null || client.currentScreen instanceof ChatScreen) && !client.isPaused())
 				validationTimer--;
@@ -82,15 +83,15 @@ public class CAPTCHAClient implements ClientModInitializer
 		if(client.player.isSpectator())
 			return;
 		
-		IConfigComponent config = CaptchaComponents.CONFIG.get(client.world.getScoreboard());
+		IConfigComponent global = CaptchaComponents.CONFIG.get(client.world.getScoreboard());
 		if(client.world != null && !(client.currentScreen instanceof AbstractCaptchaScreen))
 		{
 			float local = CaptchaComponents.PLAYER.get(client.player).getLocalDifficulty();
-			AbstractCaptchaScreen.openRandomCaptcha(client, config.getCurDifficulty() + local, reason);
+			AbstractCaptchaScreen.openRandomCaptcha(client, global.getCurDifficulty() + local, reason);
 		}
 		else if(client.currentScreen instanceof AbstractCaptchaScreen)
 			CAPTCHA.LOGGER.error("Failed to open captcha! There's already an open captcha.");
-		validationTimer = config.getMinExpirationDelay() * 20 + client.world.random.nextInt(config.getMaxExpirationDelay() * 20);
+		validationTimer = config.expirationDelayMin.getValue() * 20 + client.world.random.nextInt(config.expirationDelayMax.getValue() * 20);
 	}
 	
 	public static void openSpecificCaptcha(String type, String reason, float difficulty)
