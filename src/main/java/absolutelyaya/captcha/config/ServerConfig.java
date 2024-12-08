@@ -37,6 +37,11 @@ public class ServerConfig extends Config
 		addEntry(notEasy);
 		addEntry(constantIncreaseInterval);
 		addEntry(constantIncreaseRate);
+		
+		addEntry(loginCaptcha);
+		addEntry(respawnCaptcha);
+		addEntry(miningCaptcha);
+		addEntry(lootCaptcha);
 	}
 	
 	@Override

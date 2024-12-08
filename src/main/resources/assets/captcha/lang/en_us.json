@@ -116,5 +116,13 @@
   "config.captcha.constant_increase_rate": "Constant Difficulty++ Value",
   "config.captcha.constant_increase_rate.description": "The amount by which the global difficulty should be increased every Constant Difficulty++ Interval",
   "config.captcha.constant_increase_interval": "Constant Difficulty++ Interval",
-  "config.captcha.constant_increase_interval.description": "The Interval (in Ticks) of the global difficulty being increased by the Constant Difficulty++ Value"
+  "config.captcha.constant_increase_interval.description": "The Interval (in Ticks) of the global difficulty being increased by the Constant Difficulty++ Value",
+  "config.captcha.login_captcha": "Login Captcha",
+  "config.captcha.login_captcha.description": "Whether joining this world should trigger a captcha",
+  "config.captcha.respawn_captcha": "Respawn Captcha",
+  "config.captcha.respawn_captcha.description": "Whether respawning should trigger a captcha",
+  "config.captcha.mining_captcha": "Mining Captcha",
+  "config.captcha.mining_captcha.description": "Whether mining ores should have a certain chance of triggering a captcha",
+  "config.captcha.loot_captcha": "Loot Captcha",
+  "config.captcha.loot_captcha.description": "Whether opening new Loot Chests should trigger a captcha"
 }

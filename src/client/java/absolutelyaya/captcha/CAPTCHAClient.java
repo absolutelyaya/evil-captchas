@@ -76,25 +76,8 @@ public class CAPTCHAClient implements ClientModInitializer
 	
 	public static void requestRandomCaptcha(float difficulty, String reason)
 	{
-		MinecraftClient client = MinecraftClient.getInstance();
-		if(client.world == null)
-		{
-			CAPTCHA.LOGGER.error("Failed to open captcha! Client must be in a world.");
-			return;
-		}
-		if(client.player == null)
-		{
-			CAPTCHA.LOGGER.error("Failed to open captcha! Client doesn't have a valid main player.");
-			return;
-		}
-		if(client.player.isSpectator())
-			return;
-		
-		if(client.world != null && !(client.currentScreen instanceof AbstractCaptchaScreen))
-			ClientPlayNetworking.send(new RequestCaptchaPayload(reason, difficulty));
-		//else if(client.currentScreen instanceof AbstractCaptchaScreen)
-		//	CAPTCHA.LOGGER.error("Failed to open captcha! There's already an open captcha.");
-		if(client.world != null)
+		ClientPlayNetworking.send(new RequestCaptchaPayload(reason, difficulty));
+		if(MinecraftClient.getInstance() instanceof MinecraftClient client && client.world != null)
 			validationTimer = config.expirationDelayMin.getValue() * 20 + client.world.random.nextInt(config.expirationDelayMax.getValue() * 20);
 	}
 	
