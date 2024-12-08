@@ -125,7 +125,7 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 					default -> 0;
 				};
 				realBalance += win;
-				scheduledCoins += (int)Math.ceil(win / 5f);
+				scheduledCoins = Math.min(scheduledCoins + (int)Math.ceil(win / 5f), 1000);
 				if(client != null && client.player != null)
 					client.player.playSound(RESULT_SOUNDS[outcome[0] % RESULT_SOUNDS.length], 1f, 1f);
 			}
