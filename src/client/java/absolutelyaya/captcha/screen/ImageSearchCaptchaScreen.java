@@ -14,6 +14,7 @@ import java.util.List;
 
 public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "image-search";
 	static final String TRANSLATION_KEY = "screen.captcha.image-search.";
 	final ImageSearchCaptchaPool pool;
 	final String prompt;
@@ -54,6 +55,12 @@ public class ImageSearchCaptchaScreen extends AbstractCaptchaScreen
 		else
 			overlay = null;
 		Collections.shuffle(elements);
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	public ImageSearchCaptchaScreen(float difficulty, String reason)

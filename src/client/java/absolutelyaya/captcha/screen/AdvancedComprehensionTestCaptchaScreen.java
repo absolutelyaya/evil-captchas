@@ -9,6 +9,7 @@ import java.util.List;
 
 public class AdvancedComprehensionTestCaptchaScreen extends ComprehensionTestCaptchaScreen
 {
+	public static final String TYPE = "advanced-comprehension";
 	Pair<ComprehensionAdjectiveData, ObjectInstance> secondaryPrompt;
 	
 	protected AdvancedComprehensionTestCaptchaScreen(float difficulty, String reason)
@@ -48,6 +49,12 @@ public class AdvancedComprehensionTestCaptchaScreen extends ComprehensionTestCap
 			objects.add(target);
 		}
 		prompt = new Pair<>(secondaryPrompt.getRight().getColor(), prompt.getRight());
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

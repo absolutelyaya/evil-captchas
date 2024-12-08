@@ -16,6 +16,7 @@ import java.util.List;
 
 public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "gambling";
 	static final String TRANSLATION_KEY = "screen.captcha.gambling.";
 	static final Identifier BG_TEX = CAPTCHA.texIdentifier("gui/gambling/slotmachine");
 	static final Identifier KNOB_TEX = CAPTCHA.texIdentifier("gui/gambling/knob");
@@ -38,6 +39,12 @@ public class GamblingCaptchaScreen extends AbstractCaptchaScreen
 		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		targetBalance = 300 + (int)((difficulty - 1) * 25) + random.nextInt((int)(difficulty * 66));
 		sound[0] = sound[1] = sound[2] = false;
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

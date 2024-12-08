@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 
 public class MathCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "math";
 	static final String TRANSLATION_KEY = "screen.captcha.math.";
 	final String equation;
 	final int result;
@@ -52,6 +53,12 @@ public class MathCaptchaScreen extends AbstractCaptchaScreen
 			result = 69;
 		}
 		this.result = result;
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	int randomNumber()

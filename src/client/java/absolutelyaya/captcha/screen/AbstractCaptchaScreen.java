@@ -1,6 +1,7 @@
 package absolutelyaya.captcha.screen;
 
 import absolutelyaya.captcha.CAPTCHA;
+import absolutelyaya.captcha.CAPTCHAClient;
 import absolutelyaya.captcha.component.CaptchaComponents;
 import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.networking.CaptchaResultPayload;
@@ -16,10 +17,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.random.Random;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,7 @@ import static absolutelyaya.captcha.CAPTCHA.config;
 public abstract class AbstractCaptchaScreen extends Screen
 {
 	static final Identifier HEARTS_TEX = CAPTCHA.texIdentifier("gui/hearts");
-	static final Map<String, Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> screens = new HashMap<>();
-	static final List<String> easy = List.of("butterflies", "puzzle-slide", "rorschach");
+	static final Map<String, BiFunction<Float, String, AbstractCaptchaScreen>> screens = new HashMap<>();
 	protected static final Random random = Random.create();
 	protected final String reason;
 	protected IPlayerComponent playerData;
@@ -59,6 +57,8 @@ public abstract class AbstractCaptchaScreen extends Screen
 		playerData = CaptchaComponents.PLAYER.get(client.player);
 	}
 	
+	public abstract String getType();
+	
 	protected void addInputField(InputFieldWidget field)
 	{
 		addDrawableChild(field);
@@ -82,7 +82,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 				if(success)
 					close();
 				else
-					openRandomCaptcha(client, Math.max(difficulty - 1f, 3f), reason);
+					CAPTCHAClient.requestRandomCaptcha(Math.max(difficulty - 1f, 3f), reason);
 			}
 		}
 	}
@@ -163,7 +163,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 		nextDelay = 20;
 		if(client != null && client.player != null)
 			client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f, 1f);
-		ClientPlayNetworking.send(new CaptchaResultPayload(true));
+		ClientPlayNetworking.send(new CaptchaResultPayload(true, getType(), difficulty));
 	}
 	
 	protected void onFail()
@@ -172,7 +172,7 @@ public abstract class AbstractCaptchaScreen extends Screen
 		nextDelay = 30;
 		if(client != null && client.player != null)
 			client.player.playSound(SoundRegistry.WRONG_BUZZER, 1f, 1f);
-		ClientPlayNetworking.send(new CaptchaResultPayload(false));
+		ClientPlayNetworking.send(new CaptchaResultPayload(false, getType(), difficulty));
 	}
 	
 	protected void onClickedProceed()
@@ -188,29 +188,6 @@ public abstract class AbstractCaptchaScreen extends Screen
 	
 	protected abstract Text getInstructionText(int i, String prefix);
 	
-	public static void openRandomCaptcha(MinecraftClient client, float difficulty, String reason)
-	{
-		List<Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> candidates = new ArrayList<>();
-		for (Map.Entry<String, Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>>> i : screens.entrySet())
-			if(difficulty >= i.getValue().getLeft() && !(config.notEasy.getValue() && easy.contains(i.getKey())))
-				candidates.add(i.getValue());
-		for (int i = 0; i < 3; i++)
-		{
-			try
-			{
-				AbstractCaptchaScreen captcha;
-				Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>> pair = candidates.get(random.nextInt(candidates.size()));
-				captcha = pair.getRight().apply(difficulty - pair.getLeft(), reason);
-				client.setScreen(captcha);
-				break;
-			}
-			catch (Exception ignored)
-			{
-			
-			}
-		}
-	}
-	
 	public static void openSpecificCaptcha(MinecraftClient client, String type, float difficulty, String reason)
 	{
 		if(!screens.containsKey(type))
@@ -223,8 +200,8 @@ public abstract class AbstractCaptchaScreen extends Screen
 			try
 			{
 				AbstractCaptchaScreen captcha;
-				Pair<Integer, BiFunction<Float, String, AbstractCaptchaScreen>> pair = screens.get(type);
-				captcha = pair.getRight().apply(difficulty - pair.getLeft(), reason);
+				BiFunction<Float, String, AbstractCaptchaScreen> pair = screens.get(type);
+				captcha = pair.apply(difficulty, reason);
 				client.setScreen(captcha);
 				break;
 			}
@@ -265,19 +242,19 @@ public abstract class AbstractCaptchaScreen extends Screen
 	}
 	
 	static {
-		screens.put("single-boxes", new Pair<>(0, SingleBoxCaptchaScreen::new));
-		screens.put("multi-boxes", new Pair<>(0, MultiBoxCaptchaScreen::new));
-		screens.put("wonky-text", new Pair<>(0, WonkyTextCaptchaScreen::new));
-		screens.put("puzzle-slide", new Pair<>(3, (i, r) -> new PuzzleSlideCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("simple-comprehension", new Pair<>(5, (i, r) -> new ComprehensionTestCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("image-search", new Pair<>(5, (i, r) -> new ImageSearchCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("math", new Pair<>(5, (i, r) -> new MathCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("rorschach", new Pair<>(10, (i, r) -> new RorschachCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("wimmelbild", new Pair<>(10, (i, r) -> new WimmelbildCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("wizard", new Pair<>(15, (i, r) -> new WizardCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("amongus", new Pair<>(15, (i, r) -> new AmongusCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("advanced-comprehension", new Pair<>(20, (i, r) -> new AdvancedComprehensionTestCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("gambling", new Pair<>(20, (i, r) -> new GamblingCaptchaScreen(Math.max(i, 1), r)));
-		screens.put("butterflies", new Pair<>(20, (i, r) -> new ButterflyCaptchaScreen(Math.max(i, 1), r)));
+		screens.put("single-boxes", SingleBoxCaptchaScreen::new);
+		screens.put("multi-boxes", MultiBoxCaptchaScreen::new);
+		screens.put("wonky-text", WonkyTextCaptchaScreen::new);
+		screens.put("puzzle-slide", (i, r) -> new PuzzleSlideCaptchaScreen(Math.max(i, 1), r));
+		screens.put("simple-comprehension", (i, r) -> new ComprehensionTestCaptchaScreen(Math.max(i, 1), r));
+		screens.put("image-search", (i, r) -> new ImageSearchCaptchaScreen(Math.max(i, 1), r));
+		screens.put("math", (i, r) -> new MathCaptchaScreen(Math.max(i, 1), r));
+		screens.put("rorschach", (i, r) -> new RorschachCaptchaScreen(Math.max(i, 1), r));
+		screens.put("wimmelbild", (i, r) -> new WimmelbildCaptchaScreen(Math.max(i, 1), r));
+		screens.put("wizard", (i, r) -> new WizardCaptchaScreen(Math.max(i, 1), r));
+		screens.put("amongus", (i, r) -> new AmongusCaptchaScreen(Math.max(i, 1), r));
+		screens.put("advanced-comprehension", (i, r) -> new AdvancedComprehensionTestCaptchaScreen(Math.max(i, 1), r));
+		screens.put("gambling", (i, r) -> new GamblingCaptchaScreen(Math.max(i, 1), r));
+		screens.put("butterflies", (i, r) -> new ButterflyCaptchaScreen(Math.max(i, 1), r));
 	}
 }

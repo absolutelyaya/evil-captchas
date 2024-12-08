@@ -1,9 +1,8 @@
 package absolutelyaya.captcha.registry;
 
 import absolutelyaya.captcha.CAPTCHA;
-import absolutelyaya.captcha.component.CaptchaComponents;
 import absolutelyaya.captcha.config.ServerConfig;
-import absolutelyaya.captcha.networking.OpenSpecificCaptchaPayload;
+import absolutelyaya.captcha.networking.OpenCaptcha;
 import absolutelyaya.yayconfig.networking.OpenConfigScreenPayload;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -78,8 +77,7 @@ public class Commands
 		String type = context.getArgument("type", String.class);
 		float difficulty = context.getArgument("difficulty", Float.class);
 		
-		ServerPlayNetworking.send(target, new OpenSpecificCaptchaPayload(type, "generic", difficulty));
-		CaptchaComponents.PLAYER.get(target).startCaptcha();
+		ServerPlayNetworking.send(target, new OpenCaptcha(type, "generic", difficulty));
 		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.force", type, target.getDisplayName()), false);
 		return Command.SINGLE_SUCCESS;
 	}

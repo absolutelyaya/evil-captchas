@@ -14,6 +14,7 @@ import java.util.List;
 
 public class ButterflyCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "butterflies";
 	static final String TRANSLATION_KEY = "screen.captcha.butterflies.";
 	List<Butterfly> butterflies = new ArrayList<>();
 	List<Butterfly> eaten = new ArrayList<>();
@@ -29,6 +30,12 @@ public class ButterflyCaptchaScreen extends AbstractCaptchaScreen
 			bf.movement = bf.targetMovement = new Vector2f(random.nextFloat(), random.nextFloat()).normalize();
 			butterflies.add(bf);
 		}
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

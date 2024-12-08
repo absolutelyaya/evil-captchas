@@ -24,6 +24,8 @@ public abstract class MixinLootableContainerBlockEntity implements LootableInven
 	@Inject(method = "createMenu", at = @At("HEAD"), cancellable = true)
 	void onCreateMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity, CallbackInfoReturnable<ScreenHandler> cir)
 	{
+		if(!CAPTCHA.config.lootCaptcha.getValue())
+			return;
 		if(!playerEntity.isSpectator() && lootTable != null && playerEntity instanceof ServerPlayerEntity player)
 		{
 			CAPTCHA.openRandomCaptcha(player, "chest");

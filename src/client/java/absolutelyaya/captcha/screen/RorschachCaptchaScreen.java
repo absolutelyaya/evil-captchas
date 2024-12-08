@@ -10,6 +10,7 @@ import java.util.List;
 
 public class RorschachCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "rorschach";
 	static final String TRANSLATION_KEY = "screen.captcha.rorschach.";
 	final List<Splodge> splodges = new ArrayList<>();
 	int instruction;
@@ -20,6 +21,12 @@ public class RorschachCaptchaScreen extends AbstractCaptchaScreen
 		for (int i = 0; i < 16 + random.nextInt(32); i++)
 			splodges.add(new Splodge(random.nextInt(getContainerHalfSize()), (int)(random.nextFloat() * getContainerHalfSize() * 2), random.nextBetween(3, 16)));
 		instruction = random.nextInt(3) + (random.nextFloat() < 0.1 && difficulty > 25f ? 1 : 0);
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

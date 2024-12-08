@@ -12,6 +12,7 @@ import java.util.List;
 
 public class SingleBoxCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "single-boxes";
 	final static String TRANSLATION_KEY = "screen.captcha.boxes.single.";
 	final SingleBoxCaptchaData data;
 	final boolean[][] selection;
@@ -24,6 +25,12 @@ public class SingleBoxCaptchaScreen extends AbstractCaptchaScreen
 		data = SingleBoxCaptchaDataManager.getRandom(difficulty);
 		selection = new boolean[data.subdivisions()][data.subdivisions()];
 		prompt = data.prompts().get(random.nextInt(data.prompts().size()));
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

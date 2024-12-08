@@ -12,6 +12,7 @@ import org.joml.Vector2f;
 
 public class WizardCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "wizard";
 	static final Identifier[] WIZARD_TEX = new Identifier[] {CAPTCHA.texIdentifier("gui/wizards/wzrd1"), CAPTCHA.texIdentifier("gui/wizards/wzrd2"),
 			CAPTCHA.texIdentifier("gui/wizards/blizard"), CAPTCHA.texIdentifier("gui/wizards/wzrd-step"), CAPTCHA.texIdentifier("gui/wizards/blue"),
 			CAPTCHA.texIdentifier("gui/wizards/nekomancer")};
@@ -29,6 +30,12 @@ public class WizardCaptchaScreen extends AbstractCaptchaScreen
 		tex = WIZARD_TEX[random.nextInt(WIZARD_TEX.length)];
 		targetMovement = new Vector2f(random.nextFloat() - 0.5f, random.nextFloat() - 0.5f).normalize();
 		failTimer = 15f - Math.min(difficulty / 50f, 5f);
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

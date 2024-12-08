@@ -9,6 +9,7 @@ import org.joml.Vector2i;
 
 public class WonkyTextCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "wonky-text";
 	static final String TRANSLATION_KEY = "screen.captcha.wonky-text.";
 	static final String[] ALL_LETTER_IDS = new String[] { "a1", "a2", "b1", "c1", "d1", "d2", "e1", "e2", "f1" },
 						  ALL_LETTERS = new String[] { "A", "a", "B", "C", "d", "D", "e", "E", "F" };
@@ -45,6 +46,12 @@ public class WonkyTextCaptchaScreen extends AbstractCaptchaScreen
 		for (int i = 0; i < obscuraLayers; i++)
 			obscura[i] = random.nextInt(8) + 1;
 		solution = sb.toString();
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

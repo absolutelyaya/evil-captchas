@@ -9,6 +9,7 @@ import net.minecraft.util.math.ColorHelper;
 
 public class PuzzleSlideCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "puzzle-slide";
 	final static String TRANSLATION_KEY = "screen.captcha.puzzle.";
 	final int x, y;
 	final Identifier image;
@@ -17,11 +18,17 @@ public class PuzzleSlideCaptchaScreen extends AbstractCaptchaScreen
 	
 	protected PuzzleSlideCaptchaScreen(float difficulty, String reason)
 	{
-		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
+		super(Text.translatable(TRANSLATION_KEY + "title"), Math.max(difficulty, 1), reason);
 		x = random.nextInt(getContainerHalfSize() * 2 - 16);
 		y = random.nextInt(getContainerHalfSize() * 2 - 16);
 		image = PuzzleSlideDataManager.getRandomTexture();
 		pieceOffset = (50 + random.nextInt(50)) * (random.nextBoolean() ? 1 : -1);
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

@@ -1,13 +1,14 @@
 {
-	"required": true,
-	"package": "absolutelyaya.captcha.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"MixinItemStack",
-		"MixinLootableContainerBlockEntity",
-		"MixinPlayerManager"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "absolutelyaya.captcha.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinItemStack",
+    "MixinLootableContainerBlockEntity",
+    "MixinLootContextTypes",
+    "MixinPlayerManager"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }

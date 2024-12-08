@@ -17,6 +17,10 @@ public class ServerConfig extends Config
 	public final IntegerEntry lives = new IntegerEntry("lives", 3);
 	public final IntegerEntry constantIncreaseInterval = new IntegerEntry("constant_increase_interval", 0);
 	public final FloatEntry constantIncreaseRate = new FloatEntry("constant_increase_rate", 0.0005f);
+	public final BooleanEntry loginCaptcha = new BooleanEntry("login_captcha", true);
+	public final BooleanEntry respawnCaptcha = new BooleanEntry("respawn_captcha", true);
+	public final BooleanEntry miningCaptcha = new BooleanEntry("mining_captcha", true);
+	public final BooleanEntry lootCaptcha = new BooleanEntry("loot_captcha", true);
 	
 	public ServerConfig()
 	{

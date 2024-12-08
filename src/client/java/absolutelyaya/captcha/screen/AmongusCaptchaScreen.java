@@ -15,6 +15,7 @@ import java.util.List;
 
 public class AmongusCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "amongus";
 	static final String TRANSLATION_KEY = "screen.captcha.amongus.";
 	static final Identifier RESULT_BG = CAPTCHA.texIdentifier("gui/amongus/result_bg");
 	final List<Identifier> textures = new ArrayList<>();
@@ -36,6 +37,12 @@ public class AmongusCaptchaScreen extends AbstractCaptchaScreen
 				textures.add(impostor);
 		}
 		Collections.shuffle(textures);
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

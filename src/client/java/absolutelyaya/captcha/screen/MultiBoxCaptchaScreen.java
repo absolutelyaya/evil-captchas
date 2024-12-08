@@ -15,6 +15,7 @@ import java.util.List;
 
 public class MultiBoxCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "multi-boxes";
 	final static String TRANSLATION_KEY = "screen.captcha.boxes.multi.";
 	final MultiBoxCaptchaPool pool;
 	final List<String> allPossibleTextures = new ArrayList<>();
@@ -50,6 +51,12 @@ public class MultiBoxCaptchaScreen extends AbstractCaptchaScreen
 		subdivisions = Math.min(4 + (int)(difficulty / 40f), 6);
 		boxes = new Box[subdivisions][subdivisions];
 		populateAllBoxes();
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override

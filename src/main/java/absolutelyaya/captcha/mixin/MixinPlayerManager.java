@@ -9,12 +9,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static absolutelyaya.captcha.CAPTCHA.config;
+
 @Mixin(PlayerManager.class)
 public class MixinPlayerManager
 {
 	@Inject(method = "respawnPlayer", at = @At("TAIL"))
 	void afterRespawnPlayer(ServerPlayerEntity player, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayerEntity> cir)
 	{
-		CAPTCHA.openRandomCaptcha(player, "generic");
+		if(config.respawnCaptcha.getValue())
+			CAPTCHA.openRandomCaptcha(player, "generic");
 	}
 }

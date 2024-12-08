@@ -17,6 +17,7 @@ import java.util.List;
 
 public class ComprehensionTestCaptchaScreen extends AbstractCaptchaScreen
 {
+	public static final String TYPE = "simple-comprehension";
 	static final String TRANSLATION_KEY = "screen.captcha.comprehension.";
 	static final Identifier GLOW_TEX = CAPTCHA.texIdentifier("gui/comprehension/glow");
 	protected final List<ObjectInstance> objects = new ArrayList<>();
@@ -57,6 +58,12 @@ public class ComprehensionTestCaptchaScreen extends AbstractCaptchaScreen
 		}
 		ObjectInstance object = objects.get(random.nextInt(objects.size()));
 		prompt = new Pair<>(object.adjectives.get(random.nextInt(object.adjectives.size())), object.object);
+	}
+	
+	@Override
+	public String getType()
+	{
+		return TYPE;
 	}
 	
 	@Override
