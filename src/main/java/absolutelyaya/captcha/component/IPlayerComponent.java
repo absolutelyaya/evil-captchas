@@ -11,6 +11,10 @@ public interface IPlayerComponent extends ComponentV3, AutoSyncedComponent
 	
 	float getLocalDifficulty();
 	
+	void setLocalDifficulty(float val);
+	
+	void resetLocalDifficulty();
+	
 	int getCurLives();
 	
 	void decrementLives();

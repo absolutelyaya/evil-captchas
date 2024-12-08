@@ -90,6 +90,12 @@
   "captcha.command.config.set": "Set Config '%s' to %s",
   "captcha.command.config.check": "Config '%s' is currently set to %s",
   "captcha.command.config.check.nothing": "nothing because it doesn't exist",
+  "captcha.command.difficulty.reset.global": "Reset the global Captcha Difficulty",
+  "captcha.command.difficulty.reset.local": "Reset %s's local Captcha Difficulty",
+  "captcha.command.difficulty.set.global": "Set the global Captcha Difficulty to %s",
+  "captcha.command.difficulty.set.local": "Set %1$s's local Captcha Difficulty %2$s",
+  "captcha.command.difficulty.check.global": "The global Captcha Difficulty is %s",
+  "captcha.command.difficulty.check.local": "%1$s's local Captcha Difficulty is %2$s",
 
   "death.attack.skill_issue": "%1$s had a fatal Skill Issue",
   "death.attack.skill_issue.item": "%1$s had a fatal Skill Issue",

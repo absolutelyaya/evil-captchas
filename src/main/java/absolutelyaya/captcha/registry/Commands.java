@@ -1,6 +1,9 @@
 package absolutelyaya.captcha.registry;
 
 import absolutelyaya.captcha.CAPTCHA;
+import absolutelyaya.captcha.component.CaptchaComponents;
+import absolutelyaya.captcha.component.IConfigComponent;
+import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.config.ServerConfig;
 import absolutelyaya.captcha.networking.OpenCaptcha;
 import absolutelyaya.yayconfig.networking.OpenConfigScreenPayload;
@@ -37,7 +40,17 @@ public class Commands
 	{
 		dispatcher.register(literal("captcha").requires(source -> source.hasPermissionLevel(2))
 									.then(literal("force").then(argument("target", player()).then(argument("type", string()).suggests(Commands::typeProvider).then(argument("difficulty", floatArg()).executes(Commands::executeOpenCaptcha)))))
-									.then(literal("config").then(argument("rule", string()).suggests(Commands::ruleProvider).then(argument("value", string()).suggests(Commands::ruleValueProvider).executes(Commands::executeSetConfig)).executes(Commands::executeCheckConfig)).executes(Commands::executeOpenConfigScreen)));
+									.then(literal("config").then(argument("rule", string()).suggests(Commands::ruleProvider).then(argument("value", string()).suggests(Commands::ruleValueProvider).executes(Commands::executeSetConfig)).executes(Commands::executeCheckConfig)).executes(Commands::executeOpenConfigScreen))
+									.then(literal("difficulty")
+												  .then(literal("reset")
+																.then(literal("global").executes(Commands::executeResetGlobalDifficulty))
+																.then(literal("player").then(argument("target", player()).executes(Commands::executeResetLocalDifficulty))))
+												  .then(literal("set")
+																.then(literal("global").then(argument("difficulty", floatArg()).executes(Commands::executeSetGlobalDifficulty)))
+																.then(literal("player").then(argument("target", player()).then(argument("difficulty", floatArg()).executes(Commands::executeSetLocalDifficulty)))))
+												  .then(literal("check")
+																.then(literal("global").executes(Commands::executeCheckGlobalDifficulty))
+																.then(literal("player").then(argument("target", player()).executes(Commands::executeCheckLocalDifficulty))))));
 	}
 	
 	private static CompletableFuture<Suggestions> typeProvider(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder)
@@ -137,6 +150,58 @@ public class Commands
 		if(player == null)
 			return 0;
 		ServerPlayNetworking.send(player, new OpenConfigScreenPayload(CAPTCHA.config.getId()));
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int executeResetGlobalDifficulty(CommandContext<ServerCommandSource> context)
+	{
+		IConfigComponent global = CaptchaComponents.CONFIG.get(context.getSource().getWorld().getScoreboard());
+		global.setCurDifficulty(5f);
+		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.difficulty.reset.global"), true);
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int executeResetLocalDifficulty(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
+	{
+		ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "target");
+		IPlayerComponent component = CaptchaComponents.PLAYER.get(player);
+		component.resetLocalDifficulty();
+		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.difficulty.reset.local", player.getDisplayName()), true);
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int executeSetGlobalDifficulty(CommandContext<ServerCommandSource> context)
+	{
+		float val = context.getArgument("difficulty", Float.class);
+		IConfigComponent global = CaptchaComponents.CONFIG.get(context.getSource().getWorld().getScoreboard());
+		global.setCurDifficulty(val);
+		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.difficulty.set.global", val), true);
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int executeSetLocalDifficulty(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
+	{
+		ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "target");
+		float val = context.getArgument("difficulty", Float.class);
+		IPlayerComponent component = CaptchaComponents.PLAYER.get(player);
+		component.setLocalDifficulty(val);
+		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.difficulty.set.local", player.getDisplayName(), val), true);
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int executeCheckGlobalDifficulty(CommandContext<ServerCommandSource> context)
+	{
+		IConfigComponent global = CaptchaComponents.CONFIG.get(context.getSource().getWorld().getScoreboard());
+		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.difficulty.check.global", global.getCurDifficulty()), true);
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int executeCheckLocalDifficulty(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
+	{
+		ServerPlayerEntity player = EntityArgumentType.getPlayer(context, "target");
+		IPlayerComponent component = CaptchaComponents.PLAYER.get(player);
+		float val = component.getLocalDifficulty();
+		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.difficulty.check.local", player.getDisplayName(), val), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

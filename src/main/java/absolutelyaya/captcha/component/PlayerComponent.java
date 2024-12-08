@@ -90,6 +90,19 @@ public class PlayerComponent implements IPlayerComponent
 	}
 	
 	@Override
+	public void setLocalDifficulty(float val)
+	{
+		localDifficulty = val;
+		CaptchaComponents.PLAYER.sync(provider);
+	}
+	
+	@Override
+	public void resetLocalDifficulty()
+	{
+		setLocalDifficulty(0f);
+	}
+	
+	@Override
 	public int getCurLives()
 	{
 		return lives;
