@@ -4,6 +4,7 @@ import absolutelyaya.captcha.CAPTCHA;
 import absolutelyaya.captcha.registry.CaptchaLoot;
 import absolutelyaya.captcha.registry.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.LootableInventory;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextTypes;
@@ -14,6 +15,9 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import static absolutelyaya.captcha.CAPTCHA.config;
@@ -25,6 +29,7 @@ public class PlayerComponent implements IPlayerComponent
 	String currentCaptchaType;
 	float localDifficulty = 0f, currentCaptchaDifficulty;
 	int lives = -1;
+	BlockPos storedContainer;
 	
 	public PlayerComponent(PlayerEntity provider)
 	{
@@ -73,6 +78,17 @@ public class PlayerComponent implements IPlayerComponent
 		}
 		currentCaptchaType = null;
 		currentCaptchaDifficulty = 0f;
+		if(storedContainer != null)
+		{
+			if(provider.getWorld().getBlockEntity(storedContainer) instanceof LootableInventory inv)
+			{
+				if(inv.getLootTable() != null)
+					inv.generateLoot(provider);
+				provider.getWorld().getBlockState(storedContainer)
+						.onUse(provider.getWorld(), provider, new BlockHitResult(storedContainer.toCenterPos(), Direction.UP, storedContainer, true));
+			}
+			storedContainer = null;
+		}
 		CaptchaComponents.PLAYER.sync(provider);
 	}
 	
@@ -113,6 +129,12 @@ public class PlayerComponent implements IPlayerComponent
 	{
 		lives--;
 		CaptchaComponents.PLAYER.sync(provider);
+	}
+	
+	@Override
+	public void storeLootContainer(BlockPos pos)
+	{
+		storedContainer = pos;
 	}
 	
 	@Override

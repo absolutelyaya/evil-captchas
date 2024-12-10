@@ -1,6 +1,8 @@
 package absolutelyaya.captcha.mixin;
 
 import absolutelyaya.captcha.CAPTCHA;
+import absolutelyaya.captcha.component.CaptchaComponents;
+import absolutelyaya.captcha.component.IPlayerComponent;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,7 +31,8 @@ public abstract class MixinLootableContainerBlockEntity implements LootableInven
 		if(!playerEntity.isSpectator() && lootTable != null && playerEntity instanceof ServerPlayerEntity player)
 		{
 			CAPTCHA.openRandomCaptcha(player, "chest");
-			generateLoot(player);
+			IPlayerComponent comp = CaptchaComponents.PLAYER.get(player);
+			comp.storeLootContainer(getPos());
 			cir.setReturnValue(null);
 		}
 	}
