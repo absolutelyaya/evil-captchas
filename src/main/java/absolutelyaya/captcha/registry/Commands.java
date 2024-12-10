@@ -58,7 +58,7 @@ public class Commands
 		return builder.suggest("single-boxes").suggest("multi-boxes").suggest("puzzle-slide").suggest("wonky-text")
 					   .suggest("simple-comprehension").suggest("advanced-comprehension").suggest("math").suggest("image-search")
 					   .suggest("wimmelbild").suggest("rorschach").suggest("gambling").suggest("amongus").suggest("wizard")
-					   .suggest("butterflies").buildFuture();
+					   .suggest("butterflies").suggest("slimer").buildFuture();
 	}
 	
 	private static CompletableFuture<Suggestions> ruleProvider(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder)

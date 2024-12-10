@@ -205,9 +205,9 @@ public abstract class AbstractCaptchaScreen extends Screen
 				client.setScreen(captcha);
 				break;
 			}
-			catch (Exception ignored)
+			catch (Exception e)
 			{
-			
+				CAPTCHA.LOGGER.error("failed to open captcha of type '{}'", type, e);
 			}
 		}
 	}
@@ -256,5 +256,6 @@ public abstract class AbstractCaptchaScreen extends Screen
 		screens.put("advanced-comprehension", (i, r) -> new AdvancedComprehensionTestCaptchaScreen(Math.max(i, 1), r));
 		screens.put("gambling", (i, r) -> new GamblingCaptchaScreen(Math.max(i, 1), r));
 		screens.put("butterflies", (i, r) -> new ButterflyCaptchaScreen(Math.max(i, 1), r));
+		screens.put("slimer", (i, r) -> new SlimerCaptchaScreen(Math.max(i, 1), r));
 	}
 }
