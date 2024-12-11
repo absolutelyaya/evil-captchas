@@ -242,9 +242,9 @@ public abstract class AbstractCaptchaScreen extends Screen
 	}
 	
 	static {
-		screens.put("single-boxes", SingleBoxCaptchaScreen::new);
-		screens.put("multi-boxes", MultiBoxCaptchaScreen::new);
-		screens.put("wonky-text", WonkyTextCaptchaScreen::new);
+		screens.put("single-boxes", (i, r) -> new SingleBoxCaptchaScreen(Math.max(i, 1), r));
+		screens.put("multi-boxes", (i, r) -> new MultiBoxCaptchaScreen(Math.max(i, 1), r));
+		screens.put("wonky-text", (i, r) -> new WonkyTextCaptchaScreen(Math.max(i, 1), r));
 		screens.put("puzzle-slide", (i, r) -> new PuzzleSlideCaptchaScreen(Math.max(i, 1), r));
 		screens.put("simple-comprehension", (i, r) -> new ComprehensionTestCaptchaScreen(Math.max(i, 1), r));
 		screens.put("image-search", (i, r) -> new ImageSearchCaptchaScreen(Math.max(i, 1), r));
