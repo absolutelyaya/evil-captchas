@@ -31,6 +31,7 @@ import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 {
@@ -43,21 +44,22 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	static final Vector2i[] directions = new Vector2i[] {new Vector2i(1, 0), new Vector2i(0, -1), new Vector2i(-1, 0), new Vector2i(0, 1)};
 	FakeWorld fakeWorld;
 	MinecartEntity minecart;
-	FurnaceMinecartEntity furnaceMinecart;
+	FakeFurnaceMinecart furnaceMinecart;
 	FakeBoat boat;
 	SlimerEntity slimer;
 	float playerRot = 0, playerVisualRot;
 	Vector2i playerPos = new Vector2i(0, 4);
-	Vector3f playerVisualPos = new Vector3f(), worldVisualPos = new Vector3f();
+	Vector3f playerVisualPos = new Vector3f(), playerScale = new Vector3f(0.85f), worldVisualPos = new Vector3f();
 	byte[][] map;
-	Map<Integer, Optional<Train>> trains = new HashMap<>();
+	List<Track> tracks = new ArrayList<>(), rivers = new ArrayList<>();
+	boolean dead;
 	
 	protected SlimerCaptchaScreen(float difficulty, String reason)
 	{
 		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
 		fakeWorld = new FakeWorld(MinecraftClient.getInstance());
 		minecart = new MinecartEntity(EntityType.MINECART, fakeWorld);
-		furnaceMinecart = new FurnaceMinecartEntity(EntityType.FURNACE_MINECART, fakeWorld);
+		furnaceMinecart = new FakeFurnaceMinecart(EntityType.FURNACE_MINECART, fakeWorld);
 		boat = new FakeBoat(EntityType.BOAT, fakeWorld);
 		slimer = new SlimerEntity(EntityRegistry.SLIMER, fakeWorld);
 		map = new byte[9][10 + (int)(difficulty / 50) * 3];
@@ -71,19 +73,25 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		float difficultyMod = difficulty / 50f;
 		for (int y = 0; y < map[0].length; y++)
 		{
-			float r = (y == 0 || y == map[0].length - 1) ? 0f : random.nextFloat() + difficultyMod;
+			boolean safe = (y == 0 || y == map[0].length - 1);
+			float r = safe ? 0f : random.nextFloat() + difficultyMod;
 			if(r < 0.65f) //ground
 				for (int x = 0; x < map.length; x++)
-					map[x][y] = (byte)(random.nextFloat() < 0.2f ? 1 : 0);
-			else if(r < 0.85 + difficultyMod * 0.2f) //tracks
+					map[x][y] = safe ? (byte) 0 : (byte)(random.nextFloat() < 0.2f ? 1 : 0);
+			else if(r < 0.85 + difficultyMod) //tracks
 			{
 				for (int x = 0; x < map.length; x++)
 					map[x][y] = 2;
-				trains.put(y, Optional.empty());
+				float speed = random.nextFloat() * 0.2f + 0.1f + 0.2f * (1f + random.nextFloat() * Math.min(difficulty / 100f, 1f));
+				tracks.add(new Track(y, random.nextBoolean(), speed, difficulty, () -> Train.supply(difficulty)));
 			}
 			else //water
+			{
 				for (int x = 0; x < map.length; x++)
 					map[x][y] = 3;
+				float speed = random.nextFloat() * 0.1f + 0.025f + 0.05f * (1f + random.nextFloat() * Math.min(difficulty / 100f, 1f));
+				rivers.add(new Track(y, random.nextBoolean(), speed, difficulty, () -> Log.supply(difficulty)));
+			}
 		}
 	}
 	
@@ -113,21 +121,14 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		minecart.age++;
 		boat.tick();
 		
-		for (Map.Entry<Integer, Optional<Train>> entry : trains.entrySet())
-		{
-			if(entry.getValue().isEmpty())
-			{
-				if(random.nextFloat() < 0.05f + Math.min(difficulty / 100f, 0.5f))
-					entry.setValue(Optional.of(new Train(new Vector3f(entry.getKey(), 0, 0), random.nextFloat() * 0.2f + 0.1f)));
-			}
-			else
-			{
-				if(entry.getValue().get().hasPassed())
-					entry.setValue(Optional.empty());
-				else
-					entry.getValue().get().tick();
-			}
-		}
+		tracks.forEach(track -> {
+			track.tick();
+			track.objects[0].forEach(train -> {
+				if(train.isOver(playerPos))
+					dead = true;
+			});
+		});
+		rivers.forEach(Track::tick);
 	}
 	
 	@Override
@@ -154,6 +155,22 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	
 	void drawWorld(MatrixStack matrices, float delta)
 	{
+		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		RenderSystem.enableBlend();
+		Matrix4f matrix = matrices.peek().getPositionMatrix();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		float c = 0f;
+		bufferBuilder.vertex(matrix, -200, -2f, -200).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, -200, -2f, 200).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, 200, -2f, 200).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, 200, -2f, -200).color(c, c, c, 1f);
+		
+		bufferBuilder.vertex(matrix, -200, 200f, -5).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, -200, -2f, -5).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, 200, -2f, -5).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, 200, 200f, -5).color(c, c, c, 1f);
+		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+		
 		for (int x = map[0].length - 1; x >= 0; x--)
 		{
 			for (int y = map.length - 1; y >= 0; y--)
@@ -163,7 +180,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 					case 0 -> drawGround(TEXTURES[0], x, y, matrices);
 					case 1 -> drawGround(TEXTURES[1], x, y, matrices);
 					case 2 -> drawTrack(x, y, matrices);
-					case 3 -> drawWater(x, y, matrices, y == map[0].length - 2);
+					case 3 -> drawWater(x, y, matrices, y == map.length - 1);
 				}
 			}
 		}
@@ -257,32 +274,47 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	
 	void drawEntities(DrawContext context, MatrixStack matrices, float delta)
 	{
-		//drawEntity(boat, new Vec3d(5, Math.sin((boat.age + delta + 15) / 2.5f) * 0.05f - 0.5f, 0) , 0, matrices, context, delta);
+		rivers.forEach(i -> i.objects[0].forEach(t -> drawLog(t, context, matrices, delta)));
 		
 		matrices.push();
-		playerVisualPos = playerVisualPos.lerp(new Vector3f(playerPos.x, 0, playerPos.y), delta / 5f);
+		if(dead)
+			playerScale = playerScale.lerp(new Vector3f(1.2f, 0.05f, 1.2f), delta);
+		playerVisualPos = playerVisualPos.lerp(new Vector3f(playerPos.x, 0f, playerPos.y), delta / 5f);
 		matrices.translate(playerVisualPos.x, playerVisualPos.y, playerVisualPos.z);
 		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(playerVisualRot = MathHelper.lerpAngleDegrees(delta / 5f, playerVisualRot, playerRot)));
+		matrices.scale(playerScale.x, playerScale.y, playerScale.z);
 		drawEntity(slimer, new Vec3d(0, 0, 0), 0, matrices, context, delta);
 		matrices.pop();
 		
-		trains.forEach((i, o) -> o.ifPresent(t -> drawTrain(t, context, matrices, delta)));
+		tracks.forEach(i -> i.objects[0].forEach(t -> drawTrain(t, context, matrices, delta)));
 	}
 	
-	void drawTrain(Train train, DrawContext context, MatrixStack matrices, float delta)
+	void drawTrain(GameObject train, DrawContext context, MatrixStack matrices, float delta)
 	{
 		matrices.push();
-		Vector3f pos = train.pos;
+		Vector3f pos = new Vector3f(train.pos).sub(0, 0, train.dir ? train.speed : -train.speed).lerp(train.pos, delta);
 		matrices.translate(pos.x, pos.y, pos.z);
 		for (int i = 0; i < train.length; i++)
 		{
 			matrices.push();
 			matrices.translate(0, 0, train.dir ? -i : i);
 			matrices.scale(0.8f, 0.8f, 0.8f);
-			drawEntity( i == 0 ? furnaceMinecart : minecart, new Vec3d(0, 0, 0),
+			drawEntity(i == 0 ? furnaceMinecart : minecart, new Vec3d(0, 0, 0),
 					90 * (train.dir ? 1 : -1), matrices, context, delta);
 			matrices.pop();
 		}
+		matrices.pop();
+	}
+	
+	void drawLog(GameObject log, DrawContext context, MatrixStack matrices, float delta)
+	{
+		matrices.push();
+		Vector3f pos = new Vector3f(log.pos).sub(0, 0, log.dir ? log.speed : -log.speed).lerp(log.pos, delta);
+		matrices.translate(pos.x, pos.y, pos.z);
+		if(log instanceof Log realLog)
+			matrices.translate(0f, realLog.getHeight(delta), 0f);
+		for (int i = 0; i < log.length; i++)
+			drawGround(TEXTURES[1], 0, log.dir ? -i : i, matrices);
 		matrices.pop();
 	}
 	
@@ -316,6 +348,8 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	
 	void tryMove(int dir)
 	{
+		if(dead)
+			return;
 		playerPos = playerPos.add(directions[dir]);
 		playerRot = 90f * dir + 90;
 		slimer.hop();
@@ -348,39 +382,52 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		}
 	}
 	
-	public static abstract class GameObject
+	record Track(int pos, boolean dir, float speed, float difficulty, List<GameObject>[] objects, Supplier<GameObject> objectSupplier)
 	{
-		protected Vector3f pos;
-		
-		public GameObject(Vector3f pos)
+		public Track(int pos, boolean dir, float speed, float difficulty, Supplier<GameObject> objectSupplier)
 		{
-			this.pos = pos;
+			this(pos, dir, speed, difficulty, new ArrayList[2], objectSupplier);
+			for (int i = 0; i < objects.length; i++)
+				objects[i] = new ArrayList<>();
 		}
 		
-		public abstract void tick();
-		
-		public Vector3f getPos()
+		void tick()
 		{
-			return pos;
+			boolean free = true;
+			for (GameObject object : objects[0])
+			{
+				if(object.hasPassed())
+					objects[1].add(object);
+				else
+				{
+					object.tick();
+					if(object.isOver(new Vector2i(pos, dir ? -6 : 16)))
+						free = false;
+				}
+			}
+			objects[0].removeAll(objects[1]);
+			objects[1].clear();
+			if(free)
+			{
+				GameObject g = objectSupplier.get();
+				if(g == null)
+					return;
+				g.pos = new Vector3f(pos, 0, dir ? -6 : 16);
+				g.speed = speed;
+				g.dir = dir;
+				g.length = Math.min(3 + Math.round((1f + (1f + random.nextFloat() * difficulty / 200f)) * difficulty / 50f), 16);
+				objects[0].add(g);
+			}
 		}
 	}
 	
-	public static class Train extends GameObject
+	public static class GameObject
 	{
+		protected Vector3f pos;
 		int length;
 		boolean dir;
 		float speed;
 		
-		public Train(Vector3f pos, float speed)
-		{
-			super(pos);
-			length = random.nextInt(3) + 2;
-			this.speed = speed;
-			dir = random.nextBoolean();
-			this.pos = pos.add(0, 0, dir ? -6 : 10);
-		}
-		
-		@Override
 		public void tick()
 		{
 			pos = pos.add(0, 0, (dir ? speed : -speed));
@@ -388,7 +435,72 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		
 		public boolean hasPassed()
 		{
-			return dir ? Math.abs(pos.z) - length > 10 : pos.z + length < -4;
+			return dir ? Math.abs(pos.z) - length > 16 : pos.z + length < -4;
+		}
+		
+		public boolean isOver(Vector2i pos)
+		{
+			if(this.pos.x != pos.x)
+				return false;
+			return (pos.y <= this.pos.z + (dir ? 0.8f : length) && pos.y >= this.pos.z + (dir ? -length : -0.8f));
+		}
+	}
+	
+	public static class Train extends GameObject
+	{
+		public static GameObject supply(float difficulty)
+		{
+			if(random.nextFloat() < 0.001f + Math.min(difficulty / 2000f, 0.1f))
+				return new Train();
+			else
+				return null;
+		}
+	}
+	
+	public static class Log extends GameObject
+	{
+		float heightOverride;
+		int age;
+		
+		public static GameObject supply(float difficulty)
+		{
+			if(random.nextFloat() < (0.001f + Math.min(difficulty / 2000f, 0.1f)) * 2f)
+				return new Log();
+			else
+				return null;
+		}
+		
+		@Override
+		public void tick()
+		{
+			super.tick();
+			age++;
+		}
+		
+		public float getHeight(float delta)
+		{
+			heightOverride += delta / 30f;
+			return Math.min((float)Math.sin((age + delta + 15) / 2.5f) * 0.05f - 0.5f, heightOverride);
+		}
+		
+		public void impact()
+		{
+			heightOverride = -0.25f;
+		}
+	}
+	
+	public static class FakeFurnaceMinecart extends FurnaceMinecartEntity
+	{
+		
+		public FakeFurnaceMinecart(EntityType<? extends FurnaceMinecartEntity> entityType, World world)
+		{
+			super(entityType, world);
+		}
+		
+		@Override
+		protected boolean isLit()
+		{
+			return true;
 		}
 	}
 	

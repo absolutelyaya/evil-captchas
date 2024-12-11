@@ -33,7 +33,7 @@ public class SlimeModel extends SinglePartEntityModel<SlimerEntity>
 		ModelPartData bone = modelPartData.addChild("bone", ModelPartBuilder.create().uv(0, 0).cuboid(-5.0F, -12.0F, -5.0F, 10.0F, 10.0F, 10.0F, new Dilation(0.0F))
 		.uv(0, 20).mirrored().cuboid(-5.0F, -12.0F, -5.0F, 10.0F, 10.0F, 10.0F, new Dilation(2.0F)).mirrored(false), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
 
-		ModelPartData leftEye = bone.addChild("leftEye", ModelPartBuilder.create().uv(0, 0).cuboid(-1.5F, -1.5F, -1.0F, 3.0F, 3.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(2.5F, -8.5F, -5.0F));
+		ModelPartData leftEye = bone.addChild("leftEye", ModelPartBuilder.create().uv(0, 0).mirrored().cuboid(-1.5F, -1.5F, -1.0F, 3.0F, 3.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(2.5F, -8.5F, -5.0F));
 
 		ModelPartData rightEye = bone.addChild("rightEye", ModelPartBuilder.create().uv(0, 0).mirrored().cuboid(-1.5F, -1.5F, -1.0F, 3.0F, 3.0F, 1.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-2.5F, -8.5F, -5.0F));
 
