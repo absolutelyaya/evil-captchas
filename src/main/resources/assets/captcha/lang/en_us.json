@@ -35,6 +35,7 @@
   "screen.captcha.gambling.bet": "BET",
   "screen.captcha.sponsor.title": "Sponsorship",
   "screen.captcha.sponsor.instruction0": "Now for a message from our Sponsor",
+  "screen.captcha.sponsor.skip": "skip ad",
   "screen.captcha.wires.title": "Cut the Wire",
   "screen.captcha.wires.instruction0": "Cut the correct wire before the time runs out.",
   "screen.captcha.wires.instruction1": "You are supplied with a bomb defusal manual.",
@@ -79,6 +80,21 @@
   "captcha.adjective.radiated": "Radiated",
 
   "captcha.message.expired": "§4Validation Expired",
+  "captcha.message.addon-add": "Thank you for downloading %s!",
+  "captcha.message.addon-remove": "Your Free Trial of %s has run out",
+
+  "captcha.addon.spinning-pig": "Spinning Pig (ULTRA COOL EDITION)",
+  "captcha.addon.winter-wonderland": "☃ Winter Wonderland ☃",
+  "captcha.addon.custom-cursor": "Free Epic Cursors v4.2",
+  "captcha.addon.live-reaction": "Streamer Overlay",
+  "captcha.addon.live-reaction.line0": "that's crazy",
+  "captcha.addon.live-reaction.line1": "is this real chat ?",
+  "captcha.addon.live-reaction.line2": "lmao",
+  "captcha.addon.live-reaction.line3": "1 in chat if you agree",
+  "captcha.addon.live-reaction.line4": "huuuuge L",
+  "captcha.addon.live-reaction.line5": "This is crazy chat",
+  "captcha.addon.live-reaction.line6": "What am I even look at ?",
+  "captcha.addon.live-reaction.line7": "rofl",
 
   "captcha.reason.generic": "proceed",
   "captcha.reason.generic-verify": "verify your humanity",
@@ -87,6 +103,7 @@
   "captcha.reason.craft": "verify a Human crafted this Item",
 
   "captcha.command.force": "Triggered a '%s' CAPTCHA for %s",
+  "captcha.command.force-addon": "Added a '%s' Addon for %s",
   "captcha.command.config.set": "Set Config '%s' to %s",
   "captcha.command.config.check": "Config '%s' is currently set to %s",
   "captcha.command.config.check.nothing": "nothing because it doesn't exist",

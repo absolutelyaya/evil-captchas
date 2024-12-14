@@ -5,6 +5,7 @@ import absolutelyaya.captcha.component.IConfigComponent;
 import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.networking.ClientPacketRegistry;
 import absolutelyaya.captcha.networking.RequestCaptchaPayload;
+import absolutelyaya.captcha.rendering.FakeWorld;
 import absolutelyaya.captcha.screen.AbstractCaptchaScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -20,6 +21,7 @@ import static absolutelyaya.captcha.CAPTCHA.config;
 
 public class CAPTCHAClient implements ClientModInitializer
 {
+	public static FakeWorld FAKE_WORLD;
 	static int validationTimer;
 	
 	@Override
@@ -42,6 +44,7 @@ public class CAPTCHAClient implements ClientModInitializer
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			if(config.loginCaptcha.getValue())
 				requestRandomCaptcha("generic");
+			FAKE_WORLD = new FakeWorld(client);
 		});
 		ClientPlayerBlockBreakEvents.AFTER.register((world, player, pos, state) -> {
 			if(!config.miningCaptcha.getValue())

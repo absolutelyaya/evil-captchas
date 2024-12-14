@@ -33,7 +33,7 @@ public class CAPTCHA implements ModInitializer
 	public static final String MOD_ID = "captcha";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Map<String, Integer> captchas = new HashMap<>();
-	static final List<String> easy = List.of("butterflies", "puzzle-slide", "rorschach");
+	static final List<String> easy = List.of("butterflies", "puzzle-slide", "rorschach", "sponsor");
 	public static ServerConfig config;
 
 	@Override
@@ -125,6 +125,7 @@ public class CAPTCHA implements ModInitializer
 		captchas.put("wimmelbild", 10);
 		captchas.put("wizard", 15);
 		captchas.put("amongus", 15);
+		captchas.put("sponsor", 15);
 		captchas.put("advanced-comprehension", 20);
 		captchas.put("gambling", 20);
 		captchas.put("butterflies", 20);

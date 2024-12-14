@@ -1,6 +1,7 @@
 package absolutelyaya.captcha.component;
 
 import absolutelyaya.captcha.CAPTCHA;
+import absolutelyaya.captcha.data.InvoluntaryAddon;
 import absolutelyaya.captcha.registry.CaptchaLoot;
 import absolutelyaya.captcha.registry.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,25 +11,32 @@ import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static absolutelyaya.captcha.CAPTCHA.config;
 
 public class PlayerComponent implements IPlayerComponent
 {
 	static final RegistryKey<LootTable> REWARD_LOOT_TABLE = RegistryKey.of(RegistryKeys.LOOT_TABLE, CAPTCHA.identifier("reward"));
+	List<InvoluntaryAddon> involuntaryAddons = new ArrayList<>(), addedAddons = new ArrayList<>(), removedAddons = new ArrayList<>();
 	final PlayerEntity provider;
 	String currentCaptchaType;
 	float localDifficulty = 0f, currentCaptchaDifficulty;
-	int lives = -1;
+	int lives = -1, lastAddonCount = -1;
 	BlockPos storedContainer;
 	
 	public PlayerComponent(PlayerEntity provider)
@@ -138,6 +146,78 @@ public class PlayerComponent implements IPlayerComponent
 	}
 	
 	@Override
+	public void addInvoluntaryAddon(InvoluntaryAddon addon)
+	{
+		addedAddons.add(addon);
+	}
+	
+	@Override
+	public void addInvoluntaryAddon(String type)
+	{
+		Random random = provider.getRandom();
+		float difficulty = CaptchaComponents.CONFIG.get(provider.getWorld()).getCurDifficulty() + localDifficulty;
+		addInvoluntaryAddon(new InvoluntaryAddon(type,
+				System.currentTimeMillis() + (int)(180f + random.nextFloat() * 120f + random.nextFloat() * difficulty / 100f) * 1000,
+				random.nextFloat(), random.nextFloat()));
+	}
+	
+	@Override
+	public void removeInvoluntaryAddon(InvoluntaryAddon addon)
+	{
+		removedAddons.add(addon);
+	}
+	
+	@Override
+	public List<InvoluntaryAddon> getAddons()
+	{
+		return involuntaryAddons;
+	}
+	
+	@Override
+	public boolean hasAddon(String type)
+	{
+		for (InvoluntaryAddon addon : involuntaryAddons)
+			if(addon.type().equals(type))
+				return true;
+		return false;
+	}
+	
+	@Override
+	public InvoluntaryAddon getAddon(String type)
+	{
+		for (InvoluntaryAddon addon : involuntaryAddons)
+			if(addon.type().equals(type))
+				return addon;
+		return null;
+	}
+	
+	@Override
+	public void tick()
+	{
+		int lastCount = involuntaryAddons.size();
+		for (InvoluntaryAddon addon : involuntaryAddons)
+			if(System.currentTimeMillis() > addon.activeUntil())
+				removedAddons.add(addon);
+		
+		for (InvoluntaryAddon addon : removedAddons)
+		{
+			if(!provider.getWorld().isClient)
+				provider.sendMessage(Text.translatable("captcha.message.addon-remove", Text.translatable("captcha.addon." + addon.type())));
+			involuntaryAddons.remove(addon);
+		}
+		removedAddons.clear();
+		for (InvoluntaryAddon addon : addedAddons)
+		{
+			if(!provider.getWorld().isClient)
+				provider.sendMessage(Text.translatable("captcha.message.addon-add", Text.translatable("captcha.addon." + addon.type())));
+			involuntaryAddons.add(addon);
+		}
+		addedAddons.clear();
+		if(lastCount != involuntaryAddons.size())
+			CaptchaComponents.PLAYER.sync(provider);
+	}
+	
+	@Override
 	public void readFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup)
 	{
 		if(nbt.contains("localDifficulty", NbtElement.FLOAT_TYPE))
@@ -154,6 +234,13 @@ public class PlayerComponent implements IPlayerComponent
 			currentCaptchaDifficulty = nbt.getFloat("currentDifficulty");
 		else
 			currentCaptchaDifficulty = 0f;
+		if(nbt.contains("involuntaryAddons", NbtElement.LIST_TYPE))
+		{
+			involuntaryAddons.clear();
+			for (NbtElement element : nbt.getList("involuntaryAddons", NbtElement.COMPOUND_TYPE))
+				if(element instanceof NbtCompound compound)
+					involuntaryAddons.add(InvoluntaryAddon.deserialize(compound));
+		}
 	}
 	
 	@Override
@@ -165,5 +252,13 @@ public class PlayerComponent implements IPlayerComponent
 			nbt.putString("currentType", currentCaptchaType);
 		if(currentCaptchaDifficulty != 0f)
 			nbt.putFloat("currentDifficulty", currentCaptchaDifficulty);
+		if(lastAddonCount != involuntaryAddons.size())
+		{
+			NbtList addons = new NbtList();
+			for (InvoluntaryAddon addon : involuntaryAddons)
+				addons.add(addon.serialize());
+			nbt.put("involuntaryAddons", addons);
+			lastAddonCount = involuntaryAddons.size();
+		}
 	}
 }

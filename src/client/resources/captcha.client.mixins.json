@@ -3,6 +3,7 @@
   "package": "absolutelyaya.captcha.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "HudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

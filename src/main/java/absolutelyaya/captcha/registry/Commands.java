@@ -5,6 +5,7 @@ import absolutelyaya.captcha.component.CaptchaComponents;
 import absolutelyaya.captcha.component.IConfigComponent;
 import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.config.ServerConfig;
+import absolutelyaya.captcha.data.InvoluntaryAddon;
 import absolutelyaya.captcha.networking.OpenCaptcha;
 import absolutelyaya.yayconfig.networking.OpenConfigScreenPayload;
 import com.mojang.brigadier.Command;
@@ -40,6 +41,7 @@ public class Commands
 	{
 		dispatcher.register(literal("captcha").requires(source -> source.hasPermissionLevel(2))
 									.then(literal("force").then(argument("target", player()).then(argument("type", string()).suggests(Commands::typeProvider).then(argument("difficulty", floatArg()).executes(Commands::executeOpenCaptcha)))))
+									.then(literal("force-addon").then(argument("target", player()).then(argument("type", string()).suggests(Commands::addonProvider).then(argument("duration", floatArg()).executes(Commands::executeForceAddon)))))
 									.then(literal("config").then(argument("rule", string()).suggests(Commands::ruleProvider).then(argument("value", string()).suggests(Commands::ruleValueProvider).executes(Commands::executeSetConfig)).executes(Commands::executeCheckConfig)).executes(Commands::executeOpenConfigScreen))
 									.then(literal("difficulty")
 												  .then(literal("reset")
@@ -58,7 +60,7 @@ public class Commands
 		return builder.suggest("single-boxes").suggest("multi-boxes").suggest("puzzle-slide").suggest("wonky-text")
 					   .suggest("simple-comprehension").suggest("advanced-comprehension").suggest("math").suggest("image-search")
 					   .suggest("wimmelbild").suggest("rorschach").suggest("gambling").suggest("amongus").suggest("wizard")
-					   .suggest("butterflies").buildFuture();
+					   .suggest("butterflies").suggest("sponsor").buildFuture();
 	}
 	
 	private static CompletableFuture<Suggestions> ruleProvider(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder)
@@ -202,6 +204,22 @@ public class Commands
 		IPlayerComponent component = CaptchaComponents.PLAYER.get(player);
 		float val = component.getLocalDifficulty();
 		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.difficulty.check.local", player.getDisplayName(), val), true);
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static CompletableFuture<Suggestions> addonProvider(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder)
+	{
+		return builder.suggest("spinning-pig").suggest("winter-wonderland").suggest("custom-cursor").suggest("live-reaction").buildFuture();
+	}
+	
+	private static int executeForceAddon(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
+	{
+		ServerPlayerEntity target = EntityArgumentType.getPlayer(context, "target");
+		String type = context.getArgument("type", String.class);
+		float difficulty = context.getArgument("duration", Float.class);
+		CaptchaComponents.PLAYER.get(target).addInvoluntaryAddon(new InvoluntaryAddon(type, System.currentTimeMillis() + (long)(difficulty * 1000),
+				target.getRandom().nextFloat(), target.getRandom().nextFloat()));
+		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.force-addon", type, target.getDisplayName()), false);
 		return Command.SINGLE_SUCCESS;
 	}
 }
