@@ -209,7 +209,8 @@ public class Commands
 	
 	private static CompletableFuture<Suggestions> addonProvider(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder)
 	{
-		return builder.suggest("spinning-pig").suggest("winter-wonderland").suggest("custom-cursor").suggest("live-reaction").buildFuture();
+		return builder.suggest("spinning-pig").suggest("winter-wonderland").suggest("custom-cursor").suggest("live-reaction")
+					   .suggest("screen-saver").buildFuture();
 	}
 	
 	private static int executeForceAddon(CommandContext<ServerCommandSource> context) throws CommandSyntaxException

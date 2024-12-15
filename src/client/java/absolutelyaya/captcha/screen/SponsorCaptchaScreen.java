@@ -20,7 +20,7 @@ public class SponsorCaptchaScreen extends AbstractCaptchaScreen
 {
 	static final Identifier TEXTURE = CAPTCHA.identifier("textures/gui/sponsor/");
 	static final String TYPE = "sponsor", TRANSLATION_KEY = "screen.captcha.sponsor.";
-	static final String[] ALL_SPONSORS = new String[]{"spinning-pig", "live-reaction", "winter-wonderland", "custom-cursor"};
+	static final String[] ALL_SPONSORS = new String[]{"spinning-pig", "live-reaction", "winter-wonderland", "custom-cursor", "screen-saver"};
 	String sponsor;
 	int timer;
 	

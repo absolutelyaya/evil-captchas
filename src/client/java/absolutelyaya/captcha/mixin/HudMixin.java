@@ -3,6 +3,7 @@ package absolutelyaya.captcha.mixin;
 import absolutelyaya.captcha.component.CaptchaComponents;
 import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.screen.elements.LiveReactionElement;
+import absolutelyaya.captcha.screen.elements.ScreenSaverElement;
 import absolutelyaya.captcha.screen.elements.SpinningPigElement;
 import absolutelyaya.captcha.screen.elements.WinterWonderlandElement;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -61,6 +62,7 @@ public abstract class HudMixin
 						LiveReactionElement.react();
 					lastHealth = player.getHealth();
 				}
+				case "screen-saver" -> ScreenSaverElement.render(context, delta);
 			}
 			matrices.pop();
 		});
