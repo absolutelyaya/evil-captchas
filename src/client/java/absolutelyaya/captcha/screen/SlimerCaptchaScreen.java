@@ -40,7 +40,8 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 			Identifier.of("textures/block/moss_block.png"), Identifier.of("textures/block/obsidian.png"),
 			Identifier.of("textures/block/cobblestone.png"), Identifier.of("textures/block/rail.png"),
 			Identifier.of("textures/block/water_still.png"), Identifier.of("textures/block/water_flow.png"),
-			Identifier.of("textures/block/dirt.png")};
+			Identifier.of("textures/block/dirt.png"),
+			Identifier.of("textures/block/oak_log.png"), Identifier.of("textures/block/oak_log_top.png")};
 	static final Vector2i[] directions = new Vector2i[] {new Vector2i(1, 0), new Vector2i(0, -1), new Vector2i(-1, 0), new Vector2i(0, 1)};
 	FakeWorld fakeWorld;
 	MinecartEntity minecart;
@@ -53,6 +54,8 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	byte[][] map;
 	List<Track> tracks = new ArrayList<>(), rivers = new ArrayList<>();
 	boolean dead;
+	Log vehicle;
+	int logOffset;
 	
 	protected SlimerCaptchaScreen(float difficulty, String reason)
 	{
@@ -123,12 +126,19 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		
 		tracks.forEach(track -> {
 			track.tick();
-			track.objects[0].forEach(train -> {
-				if(train.isOver(playerPos))
-					dead = true;
-			});
+			if(track.pos == playerPos.x)
+			{
+				track.objects[0].forEach(train -> {
+					if(train.isOver(playerPos) && !dead)
+						dead = true;
+				});
+			}
 		});
 		rivers.forEach(Track::tick);
+		if(vehicle != null && vehicle.removed)
+			dead = true;
+		if(nextDelay == -1 && dead)
+			onFail();
 	}
 	
 	@Override
@@ -142,12 +152,18 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		matrices.scale(16f, -16f, 16f);
 		matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(35));
 		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(70));
-		float tickDelta = client.getRenderTickCounter().getTickDelta(false);
+		float delta = client.getRenderTickCounter().getTickDelta(false);
 		
-		worldVisualPos = worldVisualPos.lerp(new Vector3f(playerPos.x, 0, playerPos.y).mul(-1f), tickDelta / 20f);
+		if(vehicle != null)
+		{
+			Vector3f pos = new Vector3f(vehicle.pos).sub(0, 0, logOffset);
+			worldVisualPos = worldVisualPos.lerp(new Vector3f(pos.x, 0, pos.z).mul(-1f), delta / 20f);
+		}
+		else
+			worldVisualPos = worldVisualPos.lerp(new Vector3f(playerPos.x, 0, playerPos.y).mul(-1f), delta / 20f);
 		matrices.translate(worldVisualPos.x, worldVisualPos.y, worldVisualPos.z);
-		drawWorld(matrices, tickDelta);
-		drawEntities(context, matrices, tickDelta);
+		drawWorld(matrices, delta);
+		drawEntities(context, matrices, delta);
 		
 		matrices.pop();
 		context.disableScissor();
@@ -279,7 +295,13 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		matrices.push();
 		if(dead)
 			playerScale = playerScale.lerp(new Vector3f(1.2f, 0.05f, 1.2f), delta);
-		playerVisualPos = playerVisualPos.lerp(new Vector3f(playerPos.x, 0f, playerPos.y), delta / 5f);
+		if(vehicle != null)
+		{
+			Vector3f pos = new Vector3f(vehicle.pos);
+			playerVisualPos = playerVisualPos.lerp(new Vector3f(pos.x, pos.y + vehicle.getHeight(delta), pos.z - logOffset), delta / 5f);
+		}
+		else
+			playerVisualPos = playerVisualPos.lerp(new Vector3f(playerPos.x, 0f, playerPos.y), delta / 5f);
 		matrices.translate(playerVisualPos.x, playerVisualPos.y, playerVisualPos.z);
 		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(playerVisualRot = MathHelper.lerpAngleDegrees(delta / 5f, playerVisualRot, playerRot)));
 		matrices.scale(playerScale.x, playerScale.y, playerScale.z);
@@ -313,8 +335,35 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		matrices.translate(pos.x, pos.y, pos.z);
 		if(log instanceof Log realLog)
 			matrices.translate(0f, realLog.getHeight(delta), 0f);
+		RenderSystem.enableBlend();
+		float c;
+		RenderSystem.setShaderTexture(0, TEXTURES[7]);
+		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+		RenderSystem.enableBlend();
+		Matrix4f matrix = matrices.peek().getPositionMatrix();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 		for (int i = 0; i < log.length; i++)
-			drawGround(TEXTURES[1], 0, log.dir ? -i : i, matrices);
+		{
+			c = 1f;
+			bufferBuilder.vertex(matrix, -0.5f, 0f, -0.5f + (log.dir ? -i : i)).texture(0f, 0f).color(c, c, c, 1f);
+			bufferBuilder.vertex(matrix, -0.5f, 0f, 0.5f + (log.dir ? -i : i)).texture(0f, 1f).color(c, c, c, 1f);
+			bufferBuilder.vertex(matrix, 0.5f, 0f, 0.5f + (log.dir ? -i : i)).texture(1f, 1f).color(c, c, c, 1f);
+			bufferBuilder.vertex(matrix, 0.5f, 0f, -0.5f + (log.dir ? -i : i)).texture(1f, 0f).color(c, c, c, 1f);
+			c = 0.6f;
+			bufferBuilder.vertex(matrix, -0.5f, -1f, -0.5f + (log.dir ? -i : i)).texture(0f, 0f).color(c, c, c, 1f);
+			bufferBuilder.vertex(matrix, -0.5f, -1f, 0.5f + (log.dir ? -i : i)).texture(0f, 1f).color(c, c, c, 1f);
+			bufferBuilder.vertex(matrix, -0.5f,  0f, 0.5f + (log.dir ? -i : i)).texture(1f, 1f).color(c, c, c, 1f);
+			bufferBuilder.vertex(matrix, -0.5f,  0f, -0.5f + (log.dir ? -i : i)).texture(1f, 0f).color(c, c, c, 1f);
+		}
+		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+		RenderSystem.setShaderTexture(0, TEXTURES[8]);
+		bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+		c = 0.5f;
+		bufferBuilder.vertex(matrix, -0.5f, -1f, (log.dir ? 0.5f : log.length - 0.5f)).texture(0f, 0f).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, 0.5f, -1f, (log.dir ? 0.5f : log.length - 0.5f)).texture(0f, 1f).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, 0.5f,  0f, (log.dir ? 0.5f : log.length - 0.5f)).texture(1f, 1f).color(c, c, c, 1f);
+		bufferBuilder.vertex(matrix, -0.5f,  0f, (log.dir ? 0.5f : log.length - 0.5f)).texture(1f, 0f).color(c, c, c, 1f);
+		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 		matrices.pop();
 	}
 	
@@ -348,11 +397,65 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	
 	void tryMove(int dir)
 	{
-		if(dead)
+		if(dead || nextDelay >= 0)
 			return;
-		playerPos = playerPos.add(directions[dir]);
-		playerRot = 90f * dir + 90;
+		if(vehicle != null && (dir == 0 || dir == 2))
+		{
+			playerPos = new Vector2i((int)vehicle.pos.x, Math.round(vehicle.pos.z - logOffset));
+			vehicle = null;
+		}
+		if(vehicle != null)
+			moveOnLog(dir);
+		if(vehicle == null)
+		{
+			Vector2i targetPos = new Vector2i(playerPos).add(directions[dir]);
+			if(targetPos.x < 0 || targetPos.x >= map[0].length || targetPos.y < 0 || targetPos.y >= map.length)
+				return;
+			playerPos = playerPos.add(directions[dir]);
+		}
 		slimer.hop();
+		playerRot = 90f * dir + 90;
+		if(vehicle != null)
+			return;
+		if(playerPos.x == map[0].length - 1 && nextDelay == -1)
+		{
+			onComplete();
+			return;
+		}
+		rivers.forEach(track -> {
+			if(track.pos == playerPos.x)
+			{
+				for (GameObject object : track.objects[0])
+				{
+					if(object instanceof Log log && log.isOver(playerPos))
+					{
+						logOffset = Math.abs(Math.round(playerPos.y - log.pos.z));
+						if(Math.abs(logOffset) >= log.length)
+							continue;
+						log.impact();
+						vehicle = log;
+						if(!log.dir)
+							logOffset *= -1;
+						return;
+					}
+				}
+				dead = true;
+			}
+		});
+	}
+	
+	void moveOnLog(int dir)
+	{
+		if(dir == 1)
+			logOffset++;
+		else if(dir == 3)
+			logOffset--;
+		if(Math.abs(logOffset) >= vehicle.length || (vehicle.dir ? logOffset < 0 : logOffset > 0))
+		{
+			playerPos = new Vector2i((int)vehicle.pos.x, Math.round(vehicle.pos.z - logOffset));
+			vehicle = null;
+			dead = true;
+		}
 	}
 	
 	@Override
@@ -405,7 +508,11 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 						free = false;
 				}
 			}
-			objects[0].removeAll(objects[1]);
+			for (GameObject object : objects[1])
+			{
+				object.removed = true;
+				objects[0].remove(object);
+			}
 			objects[1].clear();
 			if(free)
 			{
@@ -425,7 +532,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	{
 		protected Vector3f pos;
 		int length;
-		boolean dir;
+		boolean dir, removed;
 		float speed;
 		
 		public void tick()
@@ -480,12 +587,12 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		public float getHeight(float delta)
 		{
 			heightOverride += delta / 30f;
-			return Math.min((float)Math.sin((age + delta + 15) / 2.5f) * 0.05f - 0.5f, heightOverride);
+			return 0.6f + Math.min((float)Math.sin((age + delta + 15) / 2.5f) * 0.05f - 0.5f, heightOverride);
 		}
 		
 		public void impact()
 		{
-			heightOverride = -0.25f;
+			heightOverride = -0.5f;
 		}
 	}
 	
