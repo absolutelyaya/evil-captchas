@@ -242,20 +242,20 @@ public abstract class AbstractCaptchaScreen extends Screen
 	}
 	
 	static {
-		screens.put("single-boxes", (i, r) -> new SingleBoxCaptchaScreen(Math.max(i, 1), r));
-		screens.put("multi-boxes", (i, r) -> new MultiBoxCaptchaScreen(Math.max(i, 1), r));
-		screens.put("wonky-text", (i, r) -> new WonkyTextCaptchaScreen(Math.max(i, 1), r));
-		screens.put("puzzle-slide", (i, r) -> new PuzzleSlideCaptchaScreen(Math.max(i, 1), r));
-		screens.put("simple-comprehension", (i, r) -> new ComprehensionTestCaptchaScreen(Math.max(i, 1), r));
-		screens.put("image-search", (i, r) -> new ImageSearchCaptchaScreen(Math.max(i, 1), r));
-		screens.put("math", (i, r) -> new MathCaptchaScreen(Math.max(i, 1), r));
-		screens.put("rorschach", (i, r) -> new RorschachCaptchaScreen(Math.max(i, 1), r));
-		screens.put("wimmelbild", (i, r) -> new WimmelbildCaptchaScreen(Math.max(i, 1), r));
-		screens.put("wizard", (i, r) -> new WizardCaptchaScreen(Math.max(i, 1), r));
-		screens.put("amongus", (i, r) -> new AmongusCaptchaScreen(Math.max(i, 1), r));
-		screens.put("advanced-comprehension", (i, r) -> new AdvancedComprehensionTestCaptchaScreen(Math.max(i, 1), r));
-		screens.put("gambling", (i, r) -> new GamblingCaptchaScreen(Math.max(i, 1), r));
-		screens.put("butterflies", (i, r) -> new ButterflyCaptchaScreen(Math.max(i, 1), r));
-		screens.put("slimer", (i, r) -> new SlimerCaptchaScreen(Math.max(i, 1), r));
+		screens.put("single-boxes", (i, r) -> new SingleBoxCaptchaScreen(Math.max(i, 5), r));
+		screens.put("multi-boxes", (i, r) -> new MultiBoxCaptchaScreen(Math.max(i, 5), r));
+		screens.put("wonky-text", (i, r) -> new WonkyTextCaptchaScreen(Math.max(i, 5), r));
+		screens.put("puzzle-slide", (i, r) -> new PuzzleSlideCaptchaScreen(Math.max(i, 5), r));
+		screens.put("simple-comprehension", (i, r) -> new ComprehensionTestCaptchaScreen(Math.max(i, 5), r));
+		screens.put("image-search", (i, r) -> new ImageSearchCaptchaScreen(Math.max(i, 5), r));
+		screens.put("math", (i, r) -> new MathCaptchaScreen(Math.max(i, 5), r));
+		screens.put("rorschach", (i, r) -> new RorschachCaptchaScreen(Math.max(i, 5), r));
+		screens.put("wimmelbild", (i, r) -> new WimmelbildCaptchaScreen(Math.max(i, 5), r));
+		screens.put("wizard", (i, r) -> new WizardCaptchaScreen(Math.max(i, 5), r));
+		screens.put("amongus", (i, r) -> new AmongusCaptchaScreen(Math.max(i, 5), r));
+		screens.put("advanced-comprehension", (i, r) -> new AdvancedComprehensionTestCaptchaScreen(Math.max(i, 5), r));
+		screens.put("gambling", (i, r) -> new GamblingCaptchaScreen(Math.max(i, 5), r));
+		screens.put("butterflies", (i, r) -> new ButterflyCaptchaScreen(Math.max(i, 5), r));
+		screens.put("slimer", (i, r) -> new SlimerCaptchaScreen(Math.max(i, 5), r));
 	}
 }

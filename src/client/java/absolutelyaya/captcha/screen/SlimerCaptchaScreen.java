@@ -12,7 +12,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.FurnaceMinecartEntity;
 import net.minecraft.entity.vehicle.MinecartEntity;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -30,8 +29,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.Supplier;
 
 public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 {
@@ -46,16 +45,16 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	FakeWorld fakeWorld;
 	MinecartEntity minecart;
 	FakeFurnaceMinecart furnaceMinecart;
-	FakeBoat boat;
 	SlimerEntity slimer;
 	float playerRot = 0, playerVisualRot;
 	Vector2i playerPos = new Vector2i(0, 4);
 	Vector3f playerVisualPos = new Vector3f(), playerScale = new Vector3f(0.85f), worldVisualPos = new Vector3f();
 	byte[][] map;
-	List<Track> tracks = new ArrayList<>(), rivers = new ArrayList<>();
+	List<Track<Train>> tracks = new ArrayList<>();
+	List<Track<Log>> rivers = new ArrayList<>();
 	boolean dead;
 	Log vehicle;
-	int logOffset;
+	int logOffset, time;
 	
 	protected SlimerCaptchaScreen(float difficulty, String reason)
 	{
@@ -63,7 +62,6 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		fakeWorld = new FakeWorld(MinecraftClient.getInstance());
 		minecart = new MinecartEntity(EntityType.MINECART, fakeWorld);
 		furnaceMinecart = new FakeFurnaceMinecart(EntityType.FURNACE_MINECART, fakeWorld);
-		boat = new FakeBoat(EntityType.BOAT, fakeWorld);
 		slimer = new SlimerEntity(EntityRegistry.SLIMER, fakeWorld);
 		map = new byte[9][10 + (int)(difficulty / 50) * 3];
 		generateWorld();
@@ -86,16 +84,20 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 				for (int x = 0; x < map.length; x++)
 					map[x][y] = 2;
 				float speed = random.nextFloat() * 0.2f + 0.1f + 0.2f * (1f + random.nextFloat() * Math.min(difficulty / 100f, 1f));
-				tracks.add(new Track(y, random.nextBoolean(), speed, difficulty, () -> Train.supply(difficulty)));
+				tracks.add(new Track<>(Train.class, y, random.nextBoolean(), speed, difficulty));
 			}
 			else //water
 			{
 				for (int x = 0; x < map.length; x++)
 					map[x][y] = 3;
 				float speed = random.nextFloat() * 0.1f + 0.025f + 0.05f * (1f + random.nextFloat() * Math.min(difficulty / 100f, 1f));
-				rivers.add(new Track(y, random.nextBoolean(), speed, difficulty, () -> Log.supply(difficulty)));
+				rivers.add(new Track<>(Log.class, y, random.nextBoolean(), speed, difficulty));
 			}
 		}
+		for (Track<Train> track : tracks)
+			track.setSpawnDelay(10 + (int)Math.max(random.nextFloat() * 40 - difficulty / 100f, 0), 10 + (int)Math.max(random.nextFloat() * 100 - difficulty / 100f, 0));
+		for (Track<Log> track : rivers)
+			track.setSpawnDelay(5 + (int)Math.min(random.nextFloat() * difficulty / 100f, 40), 15 + (int)Math.min(random.nextFloat() * difficulty / 100f, 100));
 	}
 	
 	@Override
@@ -111,6 +113,12 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	}
 	
 	@Override
+	protected int getInstructionLines()
+	{
+		return 3;
+	}
+	
+	@Override
 	String getTranslationKey()
 	{
 		return TRANSLATION_KEY;
@@ -122,13 +130,13 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		super.tick();
 		slimer.age++;
 		minecart.age++;
-		boat.tick();
+		time++;
 		
 		tracks.forEach(track -> {
 			track.tick();
 			if(track.pos == playerPos.x)
 			{
-				track.objects[0].forEach(train -> {
+				track.objects.forEach(train -> {
 					if(train.isOver(playerPos) && !dead)
 						dead = true;
 				});
@@ -145,6 +153,11 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	public void drawContainer(DrawContext context, MatrixStack matrices)
 	{
 		super.drawContainer(context, matrices);
+		if(client == null)
+		{
+			close(); //shouldn't ever happen, I just want the compiler to stop complaining
+			return;
+		}
 		context.enableScissor(width / 2 - getContainerHalfSize(), height / 2 - getContainerHalfSize(),
 				(width / 2) + getContainerHalfSize(), (height / 2) + getContainerHalfSize());
 		matrices.push();
@@ -162,14 +175,14 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		else
 			worldVisualPos = worldVisualPos.lerp(new Vector3f(playerPos.x, 0, playerPos.y).mul(-1f), delta / 20f);
 		matrices.translate(worldVisualPos.x, worldVisualPos.y, worldVisualPos.z);
-		drawWorld(matrices, delta);
+		drawWorld(matrices);
 		drawEntities(context, matrices, delta);
 		
 		matrices.pop();
 		context.disableScissor();
 	}
 	
-	void drawWorld(MatrixStack matrices, float delta)
+	void drawWorld(MatrixStack matrices)
 	{
 		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		RenderSystem.enableBlend();
@@ -255,7 +268,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		drawGroundPlane(TEXTURES[6], x, y, matrices);
 		matrices.pop();
 		matrices.push();
-		float offset = (float)Math.sin(boat.age / 20f + y + x) * 0.05f;
+		float offset = (float)Math.sin(time / 20f + y + x) * 0.05f;
 		matrices.translate(0f, -0.1f + offset, 0f);
 		
 		RenderSystem.setShaderTexture(0, TEXTURES[4]);
@@ -264,7 +277,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		Matrix4f matrix = matrices.peek().getPositionMatrix();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 		float div = 1f / 32f;
-		float v = div * ((boat.age / 2) % 32);
+		float v = div * ((time / 2) % 32);
 		float c = 1f;
 		float r = 0.4f, g = 0.6f, b = 1f;
 		bufferBuilder.vertex(matrix, -0.5f + x, 0f, -0.5f + y).texture(1, v).color(r * c, g * c, b * c, 1f);
@@ -290,7 +303,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	
 	void drawEntities(DrawContext context, MatrixStack matrices, float delta)
 	{
-		rivers.forEach(i -> i.objects[0].forEach(t -> drawLog(t, context, matrices, delta)));
+		rivers.forEach(i -> i.objects.forEach(t -> drawLog(t, matrices, delta)));
 		
 		matrices.push();
 		if(dead)
@@ -308,10 +321,10 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		drawEntity(slimer, new Vec3d(0, 0, 0), 0, matrices, context, delta);
 		matrices.pop();
 		
-		tracks.forEach(i -> i.objects[0].forEach(t -> drawTrain(t, context, matrices, delta)));
+		tracks.forEach(i -> i.objects.forEach(t -> drawTrain(t, context, matrices, delta)));
 	}
 	
-	void drawTrain(GameObject train, DrawContext context, MatrixStack matrices, float delta)
+	void drawTrain(Train train, DrawContext context, MatrixStack matrices, float delta)
 	{
 		matrices.push();
 		Vector3f pos = new Vector3f(train.pos).sub(0, 0, train.dir ? train.speed : -train.speed).lerp(train.pos, delta);
@@ -328,7 +341,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		matrices.pop();
 	}
 	
-	void drawLog(GameObject log, DrawContext context, MatrixStack matrices, float delta)
+	void drawLog(Log log, MatrixStack matrices, float delta)
 	{
 		matrices.push();
 		Vector3f pos = new Vector3f(log.pos).sub(0, 0, log.dir ? log.speed : -log.speed).lerp(log.pos, delta);
@@ -402,6 +415,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		if(vehicle != null && (dir == 0 || dir == 2))
 		{
 			playerPos = new Vector2i((int)vehicle.pos.x, Math.round(vehicle.pos.z - logOffset));
+			vehicle.boarded = false;
 			vehicle = null;
 		}
 		if(vehicle != null)
@@ -425,15 +439,15 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		rivers.forEach(track -> {
 			if(track.pos == playerPos.x)
 			{
-				for (GameObject object : track.objects[0])
+				for (Log object : track.objects)
 				{
 					if(object instanceof Log log && log.isOver(playerPos))
 					{
 						logOffset = Math.abs(Math.round(playerPos.y - log.pos.z));
 						if(Math.abs(logOffset) >= log.length)
 							continue;
-						log.impact();
 						vehicle = log;
+						vehicle.boarded = true;
 						if(!log.dir)
 							logOffset *= -1;
 						return;
@@ -446,22 +460,24 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	
 	void moveOnLog(int dir)
 	{
+		int lastLogOffset = logOffset;
 		if(dir == 1)
 			logOffset++;
 		else if(dir == 3)
 			logOffset--;
 		if(Math.abs(logOffset) >= vehicle.length || (vehicle.dir ? logOffset < 0 : logOffset > 0))
 		{
-			playerPos = new Vector2i((int)vehicle.pos.x, Math.round(vehicle.pos.z - logOffset));
+			playerPos = new Vector2i((int)vehicle.pos.x, Math.round(vehicle.pos.z - lastLogOffset));
+			vehicle.boarded = false;
 			vehicle = null;
 			dead = true;
 		}
 	}
 	
 	@Override
-	protected void onClickedProceed()
+	protected boolean isHasProceedButton()
 	{
-		close();
+		return false;
 	}
 	
 	@Override
@@ -469,7 +485,6 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	{
 		super.close();
 		slimer.discard();
-		boat.discard();
 		minecart.discard();
 	}
 	
@@ -485,50 +500,71 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		}
 	}
 	
-	record Track(int pos, boolean dir, float speed, float difficulty, List<GameObject>[] objects, Supplier<GameObject> objectSupplier)
+	static class Track<T extends GameObject>
 	{
-		public Track(int pos, boolean dir, float speed, float difficulty, Supplier<GameObject> objectSupplier)
+		private final Class<T> clazz;
+		private final int pos;
+		private final boolean dir;
+		private final float speed, difficulty;
+		private final List<T> objects = new ArrayList<>(), removedObjects = new ArrayList<>();
+		private int minDelay = 20, maxDelay = 40, spawnTimer;
+		
+		public Track(Class<T> clazz, int pos, boolean dir, float speed, float difficulty)
 		{
-			this(pos, dir, speed, difficulty, new ArrayList[2], objectSupplier);
-			for (int i = 0; i < objects.length; i++)
-				objects[i] = new ArrayList<>();
+			this.clazz = clazz;
+			this.pos = pos;
+			this.dir = dir;
+			this.speed = speed;
+			this.difficulty = difficulty;
+		}
+		
+		public void setSpawnDelay(int min, int maxDelta)
+		{
+			this.minDelay = min;
+			this.maxDelay = min + maxDelta;
 		}
 		
 		void tick()
 		{
 			boolean free = true;
-			for (GameObject object : objects[0])
+			for (T object : objects)
 			{
-				if(object.hasPassed())
-					objects[1].add(object);
+				if (object.hasPassed())
+					removedObjects.add(object);
 				else
 				{
 					object.tick();
-					if(object.isOver(new Vector2i(pos, dir ? -6 : 16)))
+					if (object.isOver(new Vector2i(pos, dir ? -6 : 16)))
 						free = false;
 				}
 			}
-			for (GameObject object : objects[1])
+			for (T object : removedObjects)
 			{
 				object.removed = true;
-				objects[0].remove(object);
+				objects.remove(object);
 			}
-			objects[1].clear();
-			if(free)
+			removedObjects.clear();
+			if (free && spawnTimer-- <= 0)
 			{
-				GameObject g = objectSupplier.get();
-				if(g == null)
-					return;
-				g.pos = new Vector3f(pos, 0, dir ? -6 : 16);
-				g.speed = speed;
-				g.dir = dir;
-				g.length = Math.min(3 + Math.round((1f + (1f + random.nextFloat() * difficulty / 200f)) * difficulty / 50f), 16);
-				objects[0].add(g);
+				try
+				{
+					T object = clazz.getDeclaredConstructor().newInstance();
+					object.pos = new Vector3f(pos, 0, dir ? -6 : 16);
+					object.speed = speed;
+					object.dir = dir;
+					object.length = Math.min(3 + Math.round((1f + (1f + random.nextFloat() * difficulty / 200f)) * difficulty / 50f), 16);
+					objects.add(object);
+				}
+				catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e)
+				{
+					CAPTCHA.LOGGER.error("Failed to instantiate Child Object of Slimer Captcha Track", e);
+				}
+				spawnTimer = random.nextBetween(minDelay, maxDelay);
 			}
 		}
 	}
 	
-	public static class GameObject
+	static class GameObject
 	{
 		protected Vector3f pos;
 		int length;
@@ -553,29 +589,16 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		}
 	}
 	
-	public static class Train extends GameObject
+	static class Train extends GameObject
 	{
-		public static GameObject supply(float difficulty)
-		{
-			if(random.nextFloat() < 0.001f + Math.min(difficulty / 2000f, 0.1f))
-				return new Train();
-			else
-				return null;
-		}
+	
 	}
 	
-	public static class Log extends GameObject
+	static class Log extends GameObject
 	{
-		float heightOverride;
+		boolean boarded;
 		int age;
-		
-		public static GameObject supply(float difficulty)
-		{
-			if(random.nextFloat() < (0.001f + Math.min(difficulty / 2000f, 0.1f)) * 2f)
-				return new Log();
-			else
-				return null;
-		}
+		float sink;
 		
 		@Override
 		public void tick()
@@ -586,17 +609,12 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		
 		public float getHeight(float delta)
 		{
-			heightOverride += delta / 30f;
-			return 0.6f + Math.min((float)Math.sin((age + delta + 15) / 2.5f) * 0.05f - 0.5f, heightOverride);
-		}
-		
-		public void impact()
-		{
-			heightOverride = -0.5f;
+			sink = MathHelper.lerp(delta / 20f, sink, boarded ? 0.1f : 0f);
+			return 0.6f + (float)Math.sin((age + delta + 15) / 2.5f) * (boarded ? 0.02f : 0.0333f) - 0.5f - sink;
 		}
 	}
 	
-	public static class FakeFurnaceMinecart extends FurnaceMinecartEntity
+	static class FakeFurnaceMinecart extends FurnaceMinecartEntity
 	{
 		
 		public FakeFurnaceMinecart(EntityType<? extends FurnaceMinecartEntity> entityType, World world)
@@ -608,35 +626,6 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		protected boolean isLit()
 		{
 			return true;
-		}
-	}
-	
-	public static class FakeBoat extends BoatEntity
-	{
-		float paddle;
-	
-		public FakeBoat(EntityType<? extends BoatEntity> entityType, World world)
-		{
-			super(entityType, world);
-		}
-	
-		@Override
-		public boolean isPaddleMoving(int paddle)
-		{
-			return true;
-		}
-	
-		@Override
-		public float interpolatePaddlePhase(int paddle, float tickDelta)
-		{
-			return MathHelper.lerp(tickDelta, this.paddle - (float) (Math.PI / 8), this.paddle);
-		}
-	
-		@Override
-		public void tick()
-		{
-			paddle += (float)(Math.PI / 8);
-			age++;
 		}
 	}
 }
