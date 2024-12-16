@@ -101,6 +101,8 @@ public class PlayerComponent implements IPlayerComponent
 	
 	boolean testRewardValidity(String type, float difficulty)
 	{
+		if(!config.captchaRewards.getValue())
+			return false;
 		if(currentCaptchaType == null || !currentCaptchaType.equals(type))
 			return false;
 		return difficulty == currentCaptchaDifficulty;

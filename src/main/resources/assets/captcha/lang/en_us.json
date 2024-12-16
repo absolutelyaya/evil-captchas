@@ -152,5 +152,7 @@
   "config.captcha.mining_captcha": "Mining Captcha",
   "config.captcha.mining_captcha.description": "Whether mining ores should have a certain chance of triggering a captcha",
   "config.captcha.loot_captcha": "Loot Captcha",
-  "config.captcha.loot_captcha.description": "Whether opening new Loot Chests should trigger a captcha"
+  "config.captcha.loot_captcha.description": "Whether opening new Loot Chests should trigger a captcha",
+  "config.captcha.captcha_rewards": "Captcha Rewards",
+  "config.captcha.captcha_rewards.description": "Whether successfully completing a captcha should reward players using a customizable loot table (NOTE: The Loot Table is empty per default! If you want to use this feature, use a datapack to change it.)"
 }
