@@ -1,0 +1,44 @@
+{
+  "type": "captcha:reward",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_block"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "captcha:type",
+          "type": "single-boxes"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "captcha:difficulty",
+          "difficulty": 100
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:blackstone"
+        }
+      ]
+    }
+  ]
+}

@@ -30,7 +30,7 @@ import static absolutelyaya.captcha.CAPTCHA.config;
 
 public class PlayerComponent implements IPlayerComponent
 {
-	static final RegistryKey<LootTable> REWARD_LOOT_TABLE = RegistryKey.of(RegistryKeys.LOOT_TABLE, CAPTCHA.identifier("reward"));
+	static final RegistryKey<LootTable> REWARD_LOOT_TABLE = RegistryKey.of(RegistryKeys.LOOT_TABLE, CAPTCHA.identifier("gameplay/captcha"));
 	List<InvoluntaryAddon> involuntaryAddons = new ArrayList<>(), addedAddons = new ArrayList<>(), removedAddons = new ArrayList<>();
 	final PlayerEntity provider;
 	String currentCaptchaType;
@@ -103,7 +103,7 @@ public class PlayerComponent implements IPlayerComponent
 	{
 		if(currentCaptchaType == null || !currentCaptchaType.equals(type))
 			return false;
-		return difficulty != currentCaptchaDifficulty;
+		return difficulty == currentCaptchaDifficulty;
 	}
 	
 	@Override

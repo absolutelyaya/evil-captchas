@@ -10,9 +10,6 @@ import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.provider.number.LootNumberProviderType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-
-import java.util.function.Consumer;
 
 public class CaptchaLoot
 {

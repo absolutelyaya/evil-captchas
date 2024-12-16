@@ -6,7 +6,7 @@ import absolutelyaya.captcha.component.IConfigComponent;
 import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.config.ServerConfig;
 import absolutelyaya.captcha.data.InvoluntaryAddon;
-import absolutelyaya.captcha.networking.OpenCaptcha;
+import absolutelyaya.captcha.networking.openCaptcha;
 import absolutelyaya.yayconfig.networking.OpenConfigScreenPayload;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -92,7 +92,7 @@ public class Commands
 		String type = context.getArgument("type", String.class);
 		float difficulty = context.getArgument("difficulty", Float.class);
 		
-		ServerPlayNetworking.send(target, new OpenCaptcha(type, "generic", difficulty));
+		CAPTCHA.openCaptcha(target, "generic", type, difficulty);
 		context.getSource().sendFeedback(() -> Text.translatable("captcha.command.force", type, target.getDisplayName()), false);
 		return Command.SINGLE_SUCCESS;
 	}

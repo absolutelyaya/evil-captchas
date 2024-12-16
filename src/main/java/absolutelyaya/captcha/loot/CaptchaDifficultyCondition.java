@@ -11,7 +11,7 @@ import net.minecraft.loot.context.LootContext;
 public record CaptchaDifficultyCondition(float difficulty) implements LootCondition
 {
 	public static final MapCodec<CaptchaDifficultyCondition> CODEC = RecordCodecBuilder.mapCodec(
-			instance -> instance.group(Codec.FLOAT.fieldOf("diffulty").forGetter(CaptchaDifficultyCondition::difficulty))
+			instance -> instance.group(Codec.FLOAT.fieldOf("difficulty").forGetter(CaptchaDifficultyCondition::difficulty))
 								.apply(instance, CaptchaDifficultyCondition::new));
 	
 	@Override

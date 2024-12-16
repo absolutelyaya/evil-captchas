@@ -9,7 +9,7 @@ public class PacketRegistry
 {
 	public static void register()
 	{
-		PayloadTypeRegistry.playS2C().register(OpenCaptcha.ID, OpenCaptcha.CODEC);
+		PayloadTypeRegistry.playS2C().register(openCaptcha.ID, openCaptcha.CODEC);
 		PayloadTypeRegistry.playS2C().register(CaptchaDataSyncPayload.ID, CaptchaDataSyncPayload.CODEC);
 		
 		PayloadTypeRegistry.playC2S().register(RequestCaptchaPayload.ID, RequestCaptchaPayload.CODEC);
@@ -17,7 +17,7 @@ public class PacketRegistry
 		PayloadTypeRegistry.playC2S().register(RequestAddonAdditionPayload.ID, RequestAddonAdditionPayload.CODEC);
 		
 		ServerPlayNetworking.registerGlobalReceiver(RequestCaptchaPayload.ID, ((payload, context) -> {
-			CAPTCHA.openCaptcha(context.player(), payload.reason(), payload.difficulty());
+			CAPTCHA.openRandomCaptcha(context.player(), payload.reason(), payload.difficulty());
 		}));
 		ServerPlayNetworking.registerGlobalReceiver(CaptchaResultPayload.ID, ((payload, context) -> {
 			CaptchaComponents.PLAYER.get(context.player()).finishCaptcha(payload.result(), payload.type(), payload.difficulty());

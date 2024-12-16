@@ -6,7 +6,7 @@ import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.config.ServerConfig;
 import absolutelyaya.captcha.data.*;
 import absolutelyaya.captcha.networking.CaptchaDataSyncPayload;
-import absolutelyaya.captcha.networking.OpenCaptcha;
+import absolutelyaya.captcha.networking.openCaptcha;
 import absolutelyaya.captcha.networking.PacketRegistry;
 import absolutelyaya.captcha.registry.Commands;
 import absolutelyaya.captcha.registry.DamageTypes;
@@ -78,14 +78,19 @@ public class CAPTCHA implements ModInitializer
 		IConfigComponent global = CaptchaComponents.CONFIG.get(player.getWorld().getScoreboard());
 		IPlayerComponent playerComp = CaptchaComponents.PLAYER.get(player);
 		float difficulty = global.getCurDifficulty() + playerComp.getLocalDifficulty();
-		openCaptcha(player, reason, difficulty);
+		openRandomCaptcha(player, reason, difficulty);
 	}
 	
-	public static void openCaptcha(ServerPlayerEntity player, String reason, float difficulty)
+	public static void openRandomCaptcha(ServerPlayerEntity player, String reason, float difficulty)
+	{
+		String type = getRandomCaptchaType(difficulty, player.getRandom());
+		openCaptcha(player, reason, type, difficulty);
+	}
+	
+	public static void openCaptcha(ServerPlayerEntity player, String reason, String type, float difficulty)
 	{
 		IPlayerComponent playerComp = CaptchaComponents.PLAYER.get(player);
-		String type = getRandomCaptchaType(difficulty, player.getRandom());
-		ServerPlayNetworking.send(player, new OpenCaptcha(type, reason, difficulty));
+		ServerPlayNetworking.send(player, new openCaptcha(type, reason, difficulty));
 		playerComp.startCaptcha(type, difficulty);
 	}
 	
@@ -125,11 +130,12 @@ public class CAPTCHA implements ModInitializer
 		captchas.put("math", 5);
 		captchas.put("rorschach", 10);
 		captchas.put("wimmelbild", 10);
+		captchas.put("sponsor", 10);
 		captchas.put("wizard", 15);
 		captchas.put("amongus", 15);
-		captchas.put("sponsor", 15);
 		captchas.put("advanced-comprehension", 20);
 		captchas.put("gambling", 20);
 		captchas.put("butterflies", 20);
+		captchas.put("slimer", 20);
 	}
 }
