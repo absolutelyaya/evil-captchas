@@ -9,10 +9,12 @@ import net.minecraft.world.World;
 public class SlimerEntity extends MobEntity
 {
 	public AnimationState hopAnimationState = new AnimationState();
+	public AnimationState splashAnimationState = new AnimationState();
 	
 	public SlimerEntity(EntityType<? extends MobEntity> type, World world)
 	{
 		super(type, world);
+		hopAnimationState.start(-100);
 	}
 	
 	@Override
@@ -26,5 +28,12 @@ public class SlimerEntity extends MobEntity
 		if(hopAnimationState.isRunning())
 			hopAnimationState.stop();
 		hopAnimationState.start(age);
+	}
+	
+	public void splash()
+	{
+		if(hopAnimationState.isRunning())
+			hopAnimationState.stop();
+		splashAnimationState.start(age);
 	}
 }

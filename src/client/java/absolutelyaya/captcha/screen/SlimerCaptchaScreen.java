@@ -36,7 +36,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 {
 	public static final String TYPE = "slimer", TRANSLATION_KEY = "screen.captcha.slimer.";
 	static final Identifier[] TEXTURES = new Identifier[] {
-			Identifier.of("textures/block/moss_block.png"), Identifier.of("textures/block/obsidian.png"),
+			Identifier.of("textures/block/moss_block.png"), Identifier.of("textures/block/flowering_azalea_top.png"),
 			Identifier.of("textures/block/cobblestone.png"), Identifier.of("textures/block/rail.png"),
 			Identifier.of("textures/block/water_still.png"), Identifier.of("textures/block/water_flow.png"),
 			Identifier.of("textures/block/dirt.png"),
@@ -52,7 +52,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	byte[][] map;
 	List<Track<Train>> tracks = new ArrayList<>();
 	List<Track<Log>> rivers = new ArrayList<>();
-	boolean dead;
+	boolean dead, squished;
 	Log vehicle;
 	int logOffset, time;
 	
@@ -138,13 +138,16 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 			{
 				track.objects.forEach(train -> {
 					if(train.isOver(playerPos) && !dead)
-						dead = true;
+						dead = squished = true;
 				});
 			}
 		});
 		rivers.forEach(Track::tick);
-		if(vehicle != null && vehicle.removed)
+		if(!dead && vehicle != null && vehicle.removed)
+		{
+			slimer.splash();
 			dead = true;
+		}
 		if(nextDelay == -1 && dead)
 			onFail();
 	}
@@ -306,7 +309,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		rivers.forEach(i -> i.objects.forEach(t -> drawLog(t, matrices, delta)));
 		
 		matrices.push();
-		if(dead)
+		if(squished)
 			playerScale = playerScale.lerp(new Vector3f(1.2f, 0.05f, 1.2f), delta);
 		if(vehicle != null)
 		{
@@ -454,6 +457,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 					}
 				}
 				dead = true;
+				slimer.splash();
 			}
 		});
 	}
@@ -470,7 +474,6 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 			playerPos = new Vector2i((int)vehicle.pos.x, Math.round(vehicle.pos.z - lastLogOffset));
 			vehicle.boarded = false;
 			vehicle = null;
-			dead = true;
 		}
 	}
 	

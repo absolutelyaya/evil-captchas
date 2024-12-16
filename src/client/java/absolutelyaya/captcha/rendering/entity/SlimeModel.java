@@ -11,33 +11,41 @@ import net.minecraft.client.util.math.MatrixStack;
 // Paste this class into your mod and generate all required imports
 public class SlimeModel extends SinglePartEntityModel<SlimerEntity>
 {
+	private final ModelPart trueRoot;
 	private final ModelPart root;
 	private final ModelPart bone;
 	private final ModelPart leftEye;
 	private final ModelPart rightEye;
 	private final ModelPart mouth;
+	private final ModelPart splash;
 	
 	public SlimeModel(ModelPart root)
 	{
-		this.root = root;
-		this.bone = root.getChild("bone");
+		this.trueRoot = root;
+		this.root = root.getChild("root");
+		this.bone = this.root.getChild("bone");
 		this.leftEye = this.bone.getChild("leftEye");
 		this.rightEye = this.bone.getChild("rightEye");
 		this.mouth = this.bone.getChild("mouth");
+		this.splash = this.root.getChild("splash");
 	}
 	
 	public static TexturedModelData getTexturedModelData()
 	{
 		ModelData modelData = new ModelData();
 		ModelPartData modelPartData = modelData.getRoot();
-		ModelPartData bone = modelPartData.addChild("bone", ModelPartBuilder.create().uv(0, 0).cuboid(-5.0F, -12.0F, -5.0F, 10.0F, 10.0F, 10.0F, new Dilation(0.0F))
-		.uv(0, 20).mirrored().cuboid(-5.0F, -12.0F, -5.0F, 10.0F, 10.0F, 10.0F, new Dilation(2.0F)).mirrored(false), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
-
-		ModelPartData leftEye = bone.addChild("leftEye", ModelPartBuilder.create().uv(0, 0).mirrored().cuboid(-1.5F, -1.5F, -1.0F, 3.0F, 3.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(2.5F, -8.5F, -5.0F));
-
-		ModelPartData rightEye = bone.addChild("rightEye", ModelPartBuilder.create().uv(0, 0).mirrored().cuboid(-1.5F, -1.5F, -1.0F, 3.0F, 3.0F, 1.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(-2.5F, -8.5F, -5.0F));
-
-		ModelPartData mouth = bone.addChild("mouth", ModelPartBuilder.create().uv(0, 0).mirrored().cuboid(-1.5F, -0.5F, -1.0F, 2.0F, 2.0F, 1.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(0.5F, -5.5F, -5.0F));
+		ModelPartData root = modelPartData.addChild("root", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 24.0F, 0.0F));
+		
+		ModelPartData bone = root.addChild("bone", ModelPartBuilder.create().uv(0, 0).cuboid(-5.0F, -12.0F, -5.0F, 10.0F, 10.0F, 10.0F, new Dilation(0.0F))
+														   .uv(0, 20).mirrored().cuboid(-5.0F, -12.0F, -5.0F, 10.0F, 10.0F, 10.0F, new Dilation(2.0F)).mirrored(false), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
+		
+		ModelPartData leftEye = bone.addChild("leftEye", ModelPartBuilder.create().uv(0, 0).cuboid(-1.5F, -1.5F, -1.0F, 3.0F, 3.0F, 1.0F, new Dilation(0.0F)).mirrored(false), ModelTransform.pivot(2.5F, -8.5F, -5.0F));
+		
+		ModelPartData rightEye = bone.addChild("rightEye", ModelPartBuilder.create().uv(0, 0).cuboid(-1.5F, -1.5F, -1.0F, 3.0F, 3.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(-2.5F, -8.5F, -5.0F));
+		
+		ModelPartData mouth = bone.addChild("mouth", ModelPartBuilder.create().uv(0, 0).cuboid(-1.5F, -0.5F, -1.0F, 2.0F, 2.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(0.5F, -5.5F, -5.0F));
+		
+		ModelPartData splash = root.addChild("splash", ModelPartBuilder.create().uv(0, 40).cuboid(-7.0F, -10.0F, -7.0F, 14.0F, 10.0F, 14.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
 		return TexturedModelData.of(modelData, 64, 64);
 	}
 	
@@ -46,6 +54,7 @@ public class SlimeModel extends SinglePartEntityModel<SlimerEntity>
 	{
 		getPart().traverse().forEach(ModelPart::resetTransform);
 		updateAnimation(entity.hopAnimationState, SlimeAnimation.hop, ageInTicks);
+		updateAnimation(entity.splashAnimationState, SlimeAnimation.splash, ageInTicks);
 	}
 	
 	@Override
