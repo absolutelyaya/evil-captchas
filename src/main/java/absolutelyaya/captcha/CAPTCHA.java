@@ -10,6 +10,7 @@ import absolutelyaya.captcha.networking.OpenCaptcha;
 import absolutelyaya.captcha.networking.PacketRegistry;
 import absolutelyaya.captcha.registry.Commands;
 import absolutelyaya.captcha.registry.DamageTypes;
+import absolutelyaya.captcha.registry.EntityRegistry;
 import absolutelyaya.captcha.registry.SoundRegistry;
 import net.fabricmc.api.ModInitializer;
 
@@ -48,6 +49,7 @@ public class CAPTCHA implements ModInitializer
 		SoundRegistry.register();
 		PacketRegistry.register();
 		DamageTypes.register();
+		EntityRegistry.register();
 		
 		config = new ServerConfig();
 		

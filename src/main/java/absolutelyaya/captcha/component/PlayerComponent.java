@@ -8,7 +8,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.LootableInventory;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextParameterSet;
-import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -81,7 +80,7 @@ public class PlayerComponent implements IPlayerComponent
 					new LootContextParameterSet.Builder((ServerWorld)provider.getWorld())
 							.add(CaptchaLoot.CAPTCHA_TYPE_PARAMETER, type)
 							.add(CaptchaLoot.CAPTCHA_DIFFICULTY_PARAMETER, difficulty);
-			LootContextParameterSet lootContextParameterSet = builder.build(LootContextTypes.ENTITY);
+			LootContextParameterSet lootContextParameterSet = builder.build(CaptchaLoot.CAPTCHA_LOOT_CONTEXT);
 			lootTable.generateLoot(lootContextParameterSet, 0L, provider.getInventory()::insertStack);
 		}
 		currentCaptchaType = null;

@@ -5,16 +5,22 @@ import absolutelyaya.captcha.component.IConfigComponent;
 import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.networking.ClientPacketRegistry;
 import absolutelyaya.captcha.networking.RequestCaptchaPayload;
+import absolutelyaya.captcha.registry.EntityRegistry;
+import absolutelyaya.captcha.rendering.entity.SlimeModel;
+import absolutelyaya.captcha.rendering.entity.SlimeRenderer;
 import absolutelyaya.captcha.rendering.FakeWorld;
 import absolutelyaya.captcha.screen.AbstractCaptchaScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.player.ClientPlayerBlockBreakEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.text.Text;
 
 import static absolutelyaya.captcha.CAPTCHA.config;
@@ -22,12 +28,17 @@ import static absolutelyaya.captcha.CAPTCHA.config;
 public class CAPTCHAClient implements ClientModInitializer
 {
 	public static FakeWorld FAKE_WORLD;
+	public static final EntityModelLayer SLIMER_LAYER = new EntityModelLayer(CAPTCHA.identifier("slimer"), "slimer");
 	static int validationTimer;
 	
 	@Override
 	public void onInitializeClient()
 	{
 		ClientPacketRegistry.register();
+		
+		EntityRendererRegistry.register(EntityRegistry.SLIMER, SlimeRenderer::new);
+		
+		EntityModelLayerRegistry.registerModelLayer(SLIMER_LAYER, SlimeModel::getTexturedModelData);
 		
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if(client.player == null)
