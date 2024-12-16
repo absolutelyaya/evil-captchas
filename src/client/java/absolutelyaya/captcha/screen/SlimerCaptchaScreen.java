@@ -1,30 +1,26 @@
 package absolutelyaya.captcha.screen;
 
 import absolutelyaya.captcha.CAPTCHA;
+import absolutelyaya.captcha.CAPTCHAClient;
 import absolutelyaya.captcha.entity.SlimerEntity;
 import absolutelyaya.captcha.registry.EntityRegistry;
+import absolutelyaya.captcha.rendering.FakeWorld;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.FurnaceMinecartEntity;
 import net.minecraft.entity.vehicle.MinecartEntity;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.intprovider.ConstantIntProvider;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
@@ -42,7 +38,7 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 			Identifier.of("textures/block/dirt.png"),
 			Identifier.of("textures/block/oak_log.png"), Identifier.of("textures/block/oak_log_top.png")};
 	static final Vector2i[] directions = new Vector2i[] {new Vector2i(1, 0), new Vector2i(0, -1), new Vector2i(-1, 0), new Vector2i(0, 1)};
-	FakeWorld fakeWorld;
+	static final FakeWorld fakeWorld = CAPTCHAClient.FAKE_WORLD;
 	MinecartEntity minecart;
 	FakeFurnaceMinecart furnaceMinecart;
 	SlimerEntity slimer;
@@ -59,7 +55,6 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 	protected SlimerCaptchaScreen(float difficulty, String reason)
 	{
 		super(Text.translatable(TRANSLATION_KEY + "title"), difficulty, reason);
-		fakeWorld = new FakeWorld(MinecraftClient.getInstance());
 		minecart = new MinecartEntity(EntityType.MINECART, fakeWorld);
 		furnaceMinecart = new FakeFurnaceMinecart(EntityType.FURNACE_MINECART, fakeWorld);
 		slimer = new SlimerEntity(EntityRegistry.SLIMER, fakeWorld);
@@ -489,18 +484,6 @@ public class SlimerCaptchaScreen extends AbstractCaptchaScreen
 		super.close();
 		slimer.discard();
 		minecart.discard();
-	}
-	
-	public static class FakeWorld extends ClientWorld
-	{
-		public FakeWorld(MinecraftClient client)
-		{
-			super(client.getNetworkHandler(), new Properties(Difficulty.EASY, false, true), null,
-					RegistryEntry.of(new DimensionType(OptionalLong.of(0), true, false ,false ,false,
-							1, false, true, 0, 32, 0, BlockTags.INFINIBURN_OVERWORLD,
-							CAPTCHA.identifier("fakeworld"), 1, new DimensionType.MonsterSettings(false, false, ConstantIntProvider.create(1), 0))),
-					1, 1, null, client.worldRenderer, false, 0);
-		}
 	}
 	
 	static class Track<T extends GameObject>
