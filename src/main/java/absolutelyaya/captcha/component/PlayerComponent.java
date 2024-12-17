@@ -69,6 +69,7 @@ public class PlayerComponent implements IPlayerComponent
 			if(lives <= 0)
 			{
 				provider.damage(DamageTypes.get(provider.getWorld(), DamageTypes.SKILL_ISSUE), 420);
+				storedContainer = null;
 				if(config.explosive.getValue())
 					provider.getWorld().createExplosion(provider, provider.getX(), provider.getY(), provider.getZ(), 6.9f, World.ExplosionSourceType.MOB);
 			}
@@ -85,7 +86,7 @@ public class PlayerComponent implements IPlayerComponent
 		}
 		currentCaptchaType = null;
 		currentCaptchaDifficulty = 0f;
-		if(storedContainer != null)
+		if(result && storedContainer != null)
 		{
 			if(provider.getWorld().getBlockEntity(storedContainer) instanceof LootableInventory inv)
 			{
