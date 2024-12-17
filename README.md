@@ -1,10 +1,10 @@
 # Don't you love captchas ?
-This mod adds 14 silly captchas that appear at inopportune moments; for example when opening a loot chest. They get progressively more difficult, with most not having a max difficulty; so if you play long enough, they'll get almost impossible at some point.
+This mod adds 16 silly captchas that appear at inopportune moments; for example when opening a loot chest. They get progressively more difficult, with most not having a max difficulty; so if you play long enough, they'll get almost impossible at some point.
 
 This mod is obviously not serious btw. Not a safety measure, just a small funi
 
 ## As Seen on TV! (<- actually just youtube)
-[insert video here]
+https://www.youtube.com/watch?v=pzdVKLwG0TI
 
 ## Features
 ### Captcha-like minigames (surprise!)
@@ -60,6 +60,11 @@ This mod is obviously not serious btw. Not a safety measure, just a small funi
 - Butterflies!
     - A bunch of Butterflies are set loose on your screen; click all of them
     - Difficulty influences how fast and erratic they move
+- Sponsor
+  - Now for a message from our sponsors
+- Journey of Slime
+  - Get to the other side while avoiding getting squished by slimes or drowning in rivers in an isometric 3d frogger minigame
+  - Difficulty influences the length of the area and the amount of rails//rivers
 
 I have some more ideas as well, those were too ambitious for a quick joke side project though. Maybe I'll add them in the future
 There is a Trick to some of them
@@ -93,6 +98,10 @@ There is Global and Local Difficulty; The Global Difficulty is shared between al
     - The Global Difficulty is increased by this amount every Second. I wouldn't recommend setting much higher numbers than the default, stuff escalates VERY quickly
     - If you don't want the difficulty ot increase over time, set this to 0
         - Passing Captchas will still increase the local difficulty
+- Captcha Rewards (default: true)
+  - Whether completing a captcha should reward the player with items from a customizable loot table
+    - This loot table is empty per default; if you want to add rewards to captchas, you can do so using a datapack.
+- Toggle individual captcha Sources (default: all true)
 
 ## What Triggers Captchas ?
 <details>
