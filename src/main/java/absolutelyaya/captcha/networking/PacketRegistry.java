@@ -23,7 +23,7 @@ public class PacketRegistry
 			CaptchaComponents.PLAYER.get(context.player()).finishCaptcha(payload.result(), payload.type(), payload.difficulty());
 		}));
 		ServerPlayNetworking.registerGlobalReceiver(RequestAddonAdditionPayload.ID, ((payload, context) -> {
-			CaptchaComponents.PLAYER.get(context.player()).addInvoluntaryAddon(payload.type());
+			CaptchaComponents.PLAYER.get(context.player()).addInvoluntaryAddon(payload.type(), payload.difficulty());
 		}));
 	}
 }
