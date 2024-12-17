@@ -4,8 +4,10 @@ import absolutelyaya.captcha.CAPTCHA;
 import absolutelyaya.captcha.component.CaptchaComponents;
 import absolutelyaya.captcha.component.IPlayerComponent;
 import absolutelyaya.captcha.data.InvoluntaryAddon;
+import absolutelyaya.captcha.networking.RequestAddonAdditionPayload;
 import absolutelyaya.captcha.registry.SoundRegistry;
 import absolutelyaya.captcha.screen.elements.SpinningPigElement;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -99,9 +101,7 @@ public class SponsorCaptchaScreen extends AbstractCaptchaScreen
 		if(mouseX > width / 2f - getContainerHalfSize() && mouseY > height / 2f - getContainerHalfSize() &&
 			mouseX < width / 2f + getContainerHalfSize() && mouseY < height / 2f + getContainerHalfSize())
 		{
-			playerData.addInvoluntaryAddon(new InvoluntaryAddon(sponsor,
-					System.currentTimeMillis() + (int)(180f + random.nextFloat() * 120f + random.nextFloat() * difficulty / 100f) * 1000,
-					random.nextFloat(), random.nextFloat()));
+			ClientPlayNetworking.send(new RequestAddonAdditionPayload(sponsor, difficulty));
 			if(client != null && client.player != null) //technically a fail, *but* the consequences are worse than needing to do another captcha lmao
 				client.player.playSound(SoundRegistry.WRONG_BUZZER, 1f, 1f);
 			close();

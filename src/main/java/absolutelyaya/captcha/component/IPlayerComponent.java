@@ -30,7 +30,7 @@ public interface IPlayerComponent extends ComponentV3, AutoSyncedComponent, Comm
 	
 	void addInvoluntaryAddon(InvoluntaryAddon addon);
 	
-	void addInvoluntaryAddon(String type);
+	void addInvoluntaryAddon(String type, float difficulty);
 	
 	void removeInvoluntaryAddon(InvoluntaryAddon addon);
 	

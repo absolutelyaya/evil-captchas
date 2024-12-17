@@ -154,10 +154,9 @@ public class PlayerComponent implements IPlayerComponent
 	}
 	
 	@Override
-	public void addInvoluntaryAddon(String type)
+	public void addInvoluntaryAddon(String type, float difficulty)
 	{
 		Random random = provider.getRandom();
-		float difficulty = CaptchaComponents.CONFIG.get(provider.getWorld()).getCurDifficulty() + localDifficulty;
 		addInvoluntaryAddon(new InvoluntaryAddon(type,
 				System.currentTimeMillis() + (int)(180f + random.nextFloat() * 120f + random.nextFloat() * difficulty / 100f) * 1000,
 				random.nextFloat(), random.nextFloat()));

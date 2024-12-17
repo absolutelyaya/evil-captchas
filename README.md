@@ -63,7 +63,7 @@ https://www.youtube.com/watch?v=pzdVKLwG0TI
 - Sponsor
   - Now for a message from our sponsors
 - Journey of Slime
-  - Get to the other side while avoiding getting squished by slimes or drowning in rivers in an isometric 3d frogger minigame
+  - Get to the other side while avoiding getting squished by minecarts or drowning in rivers in an isometric 3d frogger minigame
   - Difficulty influences the length of the area and the amount of rails//rivers
 
 I have some more ideas as well, those were too ambitious for a quick joke side project though. Maybe I'll add them in the future
