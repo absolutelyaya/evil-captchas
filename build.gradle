@@ -47,7 +47,7 @@ dependencies {
 	modImplementation(include"org.ladysnake.cardinal-components-api:cardinal-components-scoreboard:${project.cca_version}")
 
 	//yayConfig
-	modImplementation(include"com.github.absolutelyaya:YayConfig:v1.0.2")
+	modImplementation(include"com.github.absolutelyaya:YayConfig:v1.0.3")
 }
 
 processResources {
