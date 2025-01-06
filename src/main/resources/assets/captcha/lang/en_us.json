@@ -151,6 +151,8 @@
   "config.captcha.respawn_captcha.description": "Whether respawning should trigger a captcha",
   "config.captcha.mining_captcha": "Mining Captcha",
   "config.captcha.mining_captcha.description": "Whether mining ores should have a certain chance of triggering a captcha",
+  "config.captcha.crafting_captcha": "Crafting Captcha",
+  "config.captcha.crafting_captcha.description": "Whether crafting items should have a minimal chance of triggering a captcha",
   "config.captcha.loot_captcha": "Loot Captcha",
   "config.captcha.loot_captcha.description": "Whether opening new Loot Chests should trigger a captcha",
   "config.captcha.captcha_rewards": "Captcha Rewards",

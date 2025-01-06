@@ -21,6 +21,7 @@ public class ServerConfig extends Config
 	public final BooleanEntry respawnCaptcha = new BooleanEntry("respawn_captcha", true);
 	public final BooleanEntry miningCaptcha = new BooleanEntry("mining_captcha", true);
 	public final BooleanEntry lootCaptcha = new BooleanEntry("loot_captcha", true);
+	public final BooleanEntry craftingCaptcha = new BooleanEntry("crafting_captcha", true);
 	public final BooleanEntry captchaRewards = new BooleanEntry("captcha_rewards", true);
 	
 	public ServerConfig()
@@ -44,6 +45,7 @@ public class ServerConfig extends Config
 		addEntry(respawnCaptcha);
 		addEntry(miningCaptcha);
 		addEntry(lootCaptcha);
+		addEntry(craftingCaptcha);
 	}
 	
 	@Override

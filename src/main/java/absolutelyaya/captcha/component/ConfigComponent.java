@@ -12,9 +12,8 @@ import static absolutelyaya.captcha.CAPTCHA.config;
 public class ConfigComponent implements IConfigComponent
 {
 	final Scoreboard provider;
-	boolean lethal, explosive, validationExpiration = true, notEasy;
-	int lives = 3, constantIncreaseTimer, expirationDelayMin = 120, expirationDelayMax = 120;
-	float curDifficulty = 5f, constantIncreaseRate = 0.0005f;
+	int constantIncreaseTimer;
+	float curDifficulty = 5f;
 	
 	public ConfigComponent(Scoreboard provider, @Nullable MinecraftServer ignored)
 	{

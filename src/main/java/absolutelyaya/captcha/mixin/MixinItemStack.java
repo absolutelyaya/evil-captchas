@@ -16,7 +16,7 @@ public class MixinItemStack
 	@Inject(method = "onCraftByPlayer", at = @At("HEAD"))
 	void onCrafted(World world, PlayerEntity player, int amount, CallbackInfo ci)
 	{
-		if(player instanceof ServerPlayerEntity serverPlayer && world.random.nextFloat() < 0.001f)
+		if(player instanceof ServerPlayerEntity serverPlayer && CAPTCHA.config.craftingCaptcha.getValue() && world.random.nextFloat() < 0.001f)
 			CAPTCHA.openRandomCaptcha(serverPlayer, "craft");
 	}
 }
