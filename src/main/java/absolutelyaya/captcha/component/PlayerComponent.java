@@ -48,7 +48,7 @@ public class PlayerComponent implements IPlayerComponent
 	{
 		if(provider.getWorld().isClient)
 			return;
-		if(config.lethal.getValue())
+		if(config.lethal.getValue() && lives <= 0)
 			lives = config.lives.getValue();
 		currentCaptchaType = type;
 		currentCaptchaDifficulty = difficulty;
@@ -76,6 +76,7 @@ public class PlayerComponent implements IPlayerComponent
 		}
 		else if(testRewardValidity(type, difficulty) && provider.getWorld().getServer() instanceof MinecraftServer server)
 		{
+			lives = config.lives.getValue();
 			LootTable lootTable = server.getReloadableRegistries().getLootTable(REWARD_LOOT_TABLE);
 			LootContextParameterSet.Builder builder =
 					new LootContextParameterSet.Builder((ServerWorld)provider.getWorld())
